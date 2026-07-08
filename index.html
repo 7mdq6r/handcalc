@@ -228,6 +228,131 @@
   button, input { font-family: inherit; color: inherit; }
   button { cursor: pointer; border: none; background: none; }
 
+  /* ═══════════════════ Intro splash screen ═══════════════════ */
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at center top, #0F5540 0%, #093726 55%, #051E14 100%);
+    opacity: 1;
+    transition: opacity 0.6s ease-out;
+    overflow: hidden;
+    pointer-events: auto;
+  }
+  .intro-screen::before {
+    /* Radial vignette glow behind the emblem */
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -60%);
+    background: radial-gradient(circle, rgba(232, 199, 88, 0.18) 0%, transparent 55%);
+    pointer-events: none;
+    animation: introGlow 3s ease-in-out infinite;
+  }
+  .intro-screen::after {
+    /* Subtle top shine sweep */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(232, 199, 88, 0.08), transparent);
+    transform: skewX(-20deg);
+    animation: introShine 2.4s ease-out 0.4s forwards;
+  }
+  @keyframes introGlow {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+  }
+  @keyframes introShine {
+    0%   { left: -100%; }
+    100% { left: 130%; }
+  }
+  .intro-screen.fading-out { opacity: 0; pointer-events: none; }
+  .intro-screen.hidden { display: none; }
+
+  .intro-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    padding: 0 24px;
+  }
+  .intro-emblem {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 24px;
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+    animation: introEmblemIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s forwards;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5)) drop-shadow(0 2px 6px rgba(232, 199, 88, 0.3));
+  }
+  .intro-emblem svg { width: 100%; height: 100%; }
+  @keyframes introEmblemIn {
+    0%   { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+    60%  { opacity: 1; transform: scale(1.08) rotate(4deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .intro-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: #F5D978;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: introFadeUp 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.55s forwards;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 30px rgba(232, 199, 88, 0.25);
+  }
+  .intro-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: introFadeIn 0.6s ease-out 0.85s forwards;
+  }
+  .intro-divider::before,
+  .intro-divider::after {
+    content: '';
+    height: 1px;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, rgba(232, 199, 88, 0.55), transparent);
+  }
+  .intro-divider-diamond {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #F5D978, #C39520);
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px rgba(232, 199, 88, 0.5);
+  }
+  .intro-subtitle {
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(232, 199, 88, 0.75);
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: introFadeUp 0.6s ease-out 1s forwards;
+  }
+  @keyframes introFadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes introFadeIn {
+    to { opacity: 1; }
+  }
+
   /* ═══════════════════ App shell ═══════════════════ */
   .app {
     height: 100%;
@@ -2221,6 +2346,41 @@
 </head>
 <body data-theme="light">
 
+<!-- ═══════════════════ Intro splash screen ═══════════════════ -->
+<div id="introScreen" class="intro-screen">
+  <div class="intro-content">
+    <div class="intro-emblem">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="introGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F5D978"/>
+            <stop offset="50%" stop-color="#D4A930"/>
+            <stop offset="100%" stop-color="#9E7E1C"/>
+          </linearGradient>
+          <radialGradient id="introInnerGrad" cx="50%" cy="45%" r="50%">
+            <stop offset="0%" stop-color="#164A3A"/>
+            <stop offset="100%" stop-color="#0B3A2C"/>
+          </radialGradient>
+        </defs>
+        <circle cx="60" cy="60" r="56" fill="url(#introGoldGrad)"/>
+        <circle cx="60" cy="60" r="50" fill="url(#introInnerGrad)"/>
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#E8C758" stroke-width="0.5" opacity="0.5"/>
+        <!-- Card suits: spade (top), diamond (left), club (right), heart (bottom) -->
+        <path d="M60 35 C 60 30, 54 27, 51 30 C 48 33, 50 38, 55 40 C 52 42, 51 45, 53 46 L 67 46 C 69 45, 68 42, 65 40 C 70 38, 72 33, 69 30 C 66 27, 60 30, 60 35 Z" fill="url(#introGoldGrad)"/>
+        <path d="M38 60 L 44 54 L 50 60 L 44 66 Z" fill="url(#introGoldGrad)"/>
+        <path d="M76 56 C 74 54, 71 55, 71 58 C 68 57, 66 60, 68 62 C 66 64, 68 67, 71 66 C 71 69, 74 70, 76 68 C 78 70, 81 69, 81 66 C 84 67, 86 64, 84 62 C 86 60, 84 57, 81 58 C 81 55, 78 54, 76 56 Z M75 68 L 75 73 L 78 73 L 78 68 Z" fill="url(#introGoldGrad)"/>
+        <path d="M60 87 C 60 87, 48 80, 48 72 C 48 68, 51 66, 54 66 C 57 66, 60 68, 60 71 C 60 68, 63 66, 66 66 C 69 66, 72 68, 72 72 C 72 80, 60 87, 60 87 Z" fill="url(#introGoldGrad)"/>
+        <circle cx="60" cy="60" r="3" fill="#E8C758"/>
+      </svg>
+    </div>
+    <div class="intro-title">حاسبة الهند</div>
+    <div class="intro-divider">
+      <span class="intro-divider-diamond"></span>
+    </div>
+    <div class="intro-subtitle">مجلس أبوشقله</div>
+  </div>
+</div>
+
 <div class="app">
 
   <!-- Topbar -->
@@ -2885,6 +3045,28 @@ const THEME_KEY = 'handcalc_theme';
 /* ═══════════════════ App version tracking ═══════════════════ */
 const APP_VERSION = '1.0.4';
 const SEEN_VERSION_KEY = 'handcalc_seen_version';
+
+/* ═══════════════════ Intro splash screen ═══════════════════ */
+(function runIntroSplash() {
+  const intro = document.getElementById('introScreen');
+  if (!intro) return;
+  const totalDuration = 2000; // ms visible before fade out
+  const fadeDuration = 600;   // must match CSS transition
+  let dismissed = false;
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    intro.classList.add('fading-out');
+    setTimeout(() => {
+      intro.classList.add('hidden');
+    }, fadeDuration);
+  }
+  // Auto-dismiss after totalDuration
+  setTimeout(dismiss, totalDuration);
+  // Tap to skip
+  intro.addEventListener('click', dismiss);
+})();
+
 function setThemeIcon(theme) {
   const icon = $('themeIcon');
   if (theme === 'dark') {
