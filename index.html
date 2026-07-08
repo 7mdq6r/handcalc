@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 2;
+const OTA_HTML_VERSION = 3;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -398,6 +398,40 @@ const OTA_HTML_VERSION = 2;
   @keyframes introFadeIn {
     to { opacity: 1; }
   }
+
+  /* Floating golden sparkles around the emblem — 8 particles drifting upward with twinkle */
+  .intro-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #F5D978 0%, #E8C758 45%, transparent 75%);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 12px rgba(232, 199, 88, 0.6);
+    animation: sparkleFloat 3.5s ease-in-out infinite;
+  }
+  @keyframes sparkleFloat {
+    0%   { opacity: 0; transform: translateY(30px) scale(0.4); }
+    15%  { opacity: 1; transform: translateY(0) scale(1); }
+    50%  { opacity: 0.9; transform: translateY(-40px) scale(1.15); }
+    85%  { opacity: 0.5; transform: translateY(-80px) scale(0.8); }
+    100% { opacity: 0; transform: translateY(-110px) scale(0.3); }
+  }
+  /* Position each sparkle around the emblem area */
+  .sparkle-1 { left: 22%;  top: 38%; animation-delay: 0.0s;  width: 6px; height: 6px; }
+  .sparkle-2 { left: 78%;  top: 42%; animation-delay: 0.4s;  width: 10px; height: 10px; }
+  .sparkle-3 { left: 15%;  top: 55%; animation-delay: 0.9s;  width: 7px; height: 7px; }
+  .sparkle-4 { left: 85%;  top: 58%; animation-delay: 1.3s;  width: 8px; height: 8px; }
+  .sparkle-5 { left: 30%;  top: 32%; animation-delay: 1.6s;  width: 5px; height: 5px; }
+  .sparkle-6 { left: 68%;  top: 34%; animation-delay: 2.0s;  width: 9px; height: 9px; }
+  .sparkle-7 { left: 40%;  top: 50%; animation-delay: 2.3s;  width: 6px; height: 6px; }
+  .sparkle-8 { left: 60%;  top: 52%; animation-delay: 2.7s;  width: 7px; height: 7px; }
 
   /* ═══════════════════ App shell ═══════════════════ */
   .app {
@@ -2394,6 +2428,16 @@ const OTA_HTML_VERSION = 2;
 
 <!-- ═══════════════════ Intro splash screen ═══════════════════ -->
 <div id="introScreen" class="intro-screen">
+  <div class="intro-sparkles">
+    <span class="sparkle sparkle-1"></span>
+    <span class="sparkle sparkle-2"></span>
+    <span class="sparkle sparkle-3"></span>
+    <span class="sparkle sparkle-4"></span>
+    <span class="sparkle sparkle-5"></span>
+    <span class="sparkle sparkle-6"></span>
+    <span class="sparkle sparkle-7"></span>
+    <span class="sparkle sparkle-8"></span>
+  </div>
   <div class="intro-content">
     <div class="intro-emblem">
       <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
