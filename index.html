@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 6;
+const OTA_HTML_VERSION = 7;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -48,6 +48,19 @@ const OTA_HTML_VERSION = 6;
     })
     .catch(function() { /* offline / timeout / etc — silent fallback */ });
 })();
+
+// EMERGENCY: no matter what happens with scripts / animations / errors,
+// force-hide the intro splash after 3 seconds. Runs from <head> so it's
+// registered before body scripts even parse.
+setTimeout(function() {
+  var el = document.getElementById('introScreen');
+  if (el) {
+    el.style.display = 'none';
+    el.style.opacity = '0';
+    el.style.visibility = 'hidden';
+    if (el.parentNode) el.parentNode.removeChild(el);
+  }
+}, 3000);
 </script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3140,6 +3153,17 @@ const SEEN_VERSION_KEY = 'handcalc_seen_version';
 (function runIntroSplash() {
   const intro = document.getElementById('introScreen');
   if (!intro) return;
+
+  // If the intro was already shown in this session (e.g. before an OTA swap),
+  // don't show it again — just remove it and get out of the user's way.
+  try {
+    if (sessionStorage.getItem('_intro_shown') === 'yes') {
+      if (intro.parentNode) intro.parentNode.removeChild(intro);
+      return;
+    }
+    sessionStorage.setItem('_intro_shown', 'yes');
+  } catch(e) {}
+
   const TOTAL_MS = 1500;   // total visible time
   const FADE_MS = 400;     // fade-out duration
   let dismissed = false;
@@ -3165,7 +3189,7 @@ const SEEN_VERSION_KEY = 'handcalc_seen_version';
   setTimeout(forceRemove, 2500);
   // Tap anywhere on the intro to skip
   intro.addEventListener('click', dismiss);
-  // Also dismiss on any keyboard/touch on the whole document as extra safety
+  // Also dismiss on any touch/click on the whole document as extra safety
   window.addEventListener('touchstart', dismiss, { once: true, passive: true });
 })();
 
