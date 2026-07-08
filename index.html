@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 7;
+const OTA_HTML_VERSION = 8;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -557,6 +557,28 @@ setTimeout(function() {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    overflow: hidden;
+  }
+  .gold-btn::after {
+    /* Periodic shine sweep that runs across the button every ~4s */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.55) 50%,
+      transparent 100%);
+    transform: skewX(-20deg);
+    animation: goldBtnShine 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes goldBtnShine {
+    0%    { left: -60%; }
+    25%   { left: 130%; }
+    100%  { left: 130%; }
   }
   .gold-btn:active {
     transform: scale(0.98);
@@ -566,6 +588,7 @@ setTimeout(function() {
       0 1px 2px rgba(0, 0, 0, 0.10);
   }
   .gold-btn:disabled { opacity: 0.45; }
+  .gold-btn:disabled::after { animation: none; opacity: 0; }
 
   .gold-btn svg {
     width: 20px;
