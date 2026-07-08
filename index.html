@@ -3,6 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<!-- ═══════════════════ Instant OTA update check ═══════════════════
+     Fetches the latest HTML from GitHub in parallel with page load.
+     If a newer version is available, replaces the current document
+     BEFORE the user sees the old version. Falls back silently on
+     offline / timeout / same version.
+
+     IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
+-->
+<script>
+const OTA_HTML_VERSION = 2;
+
+(function otaInstantUpdate() {
+  // Guard against reload loops: after we swap once in this session, don't retry
+  try {
+    if (sessionStorage.getItem('_ota_swapped') === 'yes') return;
+  } catch(e) { return; }
+
+  const OTA_URL = 'https://7mdq6r.github.io/handcalc/index.html';
+  const OTA_TIMEOUT_MS = 1600;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), OTA_TIMEOUT_MS);
+
+  fetch(OTA_URL + '?_=' + Date.now(), { signal: controller.signal, cache: 'no-store' })
+    .then(function(resp) {
+      clearTimeout(timer);
+      if (!resp.ok) return null;
+      return resp.text();
+    })
+    .then(function(newHtml) {
+      if (!newHtml || newHtml.length < 5000) return;
+      if (newHtml.indexOf('<!DOCTYPE html>') !== 0) return;
+      const m = /const\s+OTA_HTML_VERSION\s*=\s*(\d+)/.exec(newHtml);
+      if (!m) return;
+      const remoteVersion = parseInt(m[1], 10);
+      if (isNaN(remoteVersion) || remoteVersion <= OTA_HTML_VERSION) return;
+      // Newer version found — replace document with the fresh HTML.
+      try { sessionStorage.setItem('_ota_swapped', 'yes'); } catch(e) {}
+      document.open();
+      document.write(newHtml);
+      document.close();
+    })
+    .catch(function() { /* offline / timeout / etc — silent fallback */ });
+})();
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B3A2C">
