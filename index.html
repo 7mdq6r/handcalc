@@ -461,6 +461,15 @@
     50%      { transform: scale(1.025); }
   }
   .welcome-emblem svg { animation: emblemBreathe 4s ease-in-out infinite; }
+  .welcome-emblem { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  @keyframes emblemSpin {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.14); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  .welcome-emblem.spinning svg {
+    animation: emblemSpin 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
 
   .home-btn-wrap {
     padding: 0 2px 12px;
@@ -1438,6 +1447,20 @@
     overflow: hidden;
     animation: winnerGlow 2.4s ease-in-out infinite;
   }
+  .winner-banner-duration {
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(11, 58, 44, 0.75);
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 2;
+  }
+  .winner-banner-duration::before {
+    content: '⏱ ';
+    margin-inline-end: 3px;
+  }
   @keyframes winnerGlow {
     0%, 100% {
       box-shadow:
@@ -2274,7 +2297,7 @@
 
     <div class="howto-list">
       <div class="howto-item">
-        <div class="howto-num">1</div>
+        <div class="howto-num">١</div>
         <div class="howto-text">
           <div class="howto-title">ابدأ اللعبة</div>
           <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
@@ -2358,7 +2381,7 @@
       <div class="howto-item">
         <div class="howto-num">±</div>
         <div class="howto-text">
-          <div class="howto-title">تعديل سريع ±100</div>
+          <div class="howto-title">تعديل سريع ±١٠٠</div>
           <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
         </div>
       </div>
@@ -2472,6 +2495,7 @@ const state = {
   pending: { winner: null, type: null, target: null, penalty: null, step: 1 },
   inlinePending: { winner: null, type: null, target: null, penalty: null, phase: null },
   lastSavedGameId: null,
+  startTime: null,
 };
 
 const HAND_RULES = {
@@ -2609,6 +2633,73 @@ function showDialog(title, message) {
     dialogResolver = resolve;
   });
 }
+
+/* ═══════════════════ Victory sound + duration + number animation ═══════════════════ */
+
+// Play a cheerful three-note chime when a game ends. Uses Web Audio API — no assets needed.
+let audioCtx = null;
+function playVictorySound() {
+  try {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // C-major arpeggio: C5, E5, G5, C6 — a bright victory motif
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    const t0 = audioCtx.currentTime;
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const start = t0 + i * 0.12;
+      const dur = 0.42;
+      // Gentle envelope: quick attack, slow decay
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.18, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + dur);
+    });
+  } catch(e) { /* silently ignore audio failures */ }
+}
+
+// Format game duration as "45 دقيقة" or "1 ساعة و 20 دقيقة"
+function formatGameDuration() {
+  if (!state.startTime) return '';
+  const elapsed = Date.now() - state.startTime;
+  const totalMin = Math.max(1, Math.round(elapsed / 60000));
+  if (totalMin < 60) return `مدة اللعبة: ${totalMin} دقيقة`;
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  if (m === 0) return `مدة اللعبة: ${h} ساعة`;
+  return `مدة اللعبة: ${h} ساعة و ${m} دقيقة`;
+}
+
+// Animate a number in an element counting from old to new value.
+function animateNumber(el, fromNum, toNum, duration = 500) {
+  if (!el) return;
+  if (fromNum === toNum) { el.textContent = String(toNum); return; }
+  const start = performance.now();
+  const delta = toNum - fromNum;
+  function tick(now) {
+    const p = Math.min(1, (now - start) / duration);
+    // Ease-out cubic for a natural slowdown
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(fromNum + delta * eased);
+    el.textContent = String(val);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// Snapshot the current player totals so we can animate transitions on next render.
+let lastRenderedTotals = null;
+
 $('dialogCancel').addEventListener('click', () => {
   $('confirmDialog').classList.remove('active');
   if (dialogResolver) { dialogResolver(false); dialogResolver = null; }
@@ -2627,7 +2718,7 @@ $('confirmDialog').addEventListener('click', e => {
 /* ═══════════════════ Theme (light default, persists per device) ═══════════════════ */
 const THEME_KEY = 'handcalc_theme';
 /* ═══════════════════ App version tracking ═══════════════════ */
-const APP_VERSION = '1.0.3';
+const APP_VERSION = '1.0.4';
 const SEEN_VERSION_KEY = 'handcalc_seen_version';
 function setThemeIcon(theme) {
   const icon = $('themeIcon');
@@ -2679,7 +2770,7 @@ $('whatsnewOkBtn').addEventListener('click', () => {
   dismissWhatsNew();
 });
 // Set the version label dynamically (in Arabic numerals)
-$('whatsnewVersion').textContent = 'النسخة ' + APP_VERSION.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
+$('whatsnewVersion').textContent = 'النسخة ' + APP_VERSION;
 // Show on launch if the user hasn't seen THIS version before
 (function showWhatsNewOnLaunch() {
   let seen = null;
@@ -3116,11 +3207,37 @@ $('shareModal').addEventListener('click', e => {
 
 /* ═══════════════════ Start flow ═══════════════════ */
 $('startBtn').addEventListener('click', () => {
+  vibrate('light');
   state.rounds = [];
   state.lastSavedGameId = null;
+  state.victoryTriggered = false;
+  lastRenderedTotals = null;
   renderSetup();
   showScreen('screen-setup');
 });
+
+/* Easter egg: tap the emblem to make it spin ⏤ with a subtle haptic */
+(function setupEmblemEasterEgg() {
+  const emblem = document.querySelector('.welcome-emblem');
+  if (!emblem) return;
+  let tapCount = 0;
+  let tapTimer = null;
+  emblem.addEventListener('click', () => {
+    if (emblem.classList.contains('spinning')) return;
+    emblem.classList.add('spinning');
+    vibrate('light');
+    // Brief victory chime + burst on triple-tap
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+    if (tapCount >= 3) {
+      playVictorySound();
+      vibrate('success');
+      tapCount = 0;
+    }
+    setTimeout(() => emblem.classList.remove('spinning'), 900);
+  });
+})();
 
 function renderSetup() {
   const wrap = $('playerInputs');
@@ -3154,6 +3271,8 @@ $('startGameBtn').addEventListener('click', () => {
   for (let i = 0; i < 4; i++) {
     if (!state.players[i]) state.players[i] = labels[i];
   }
+  state.startTime = Date.now();
+  vibrate('medium');
   renderGame();
   showScreen('screen-game');
 });
@@ -3261,10 +3380,33 @@ function renderGame() {
     card.innerHTML = `
       <div class="player-card-name">${escapeHtml(name)}</div>
       ${rankHtml}
-      <div class="player-card-score">${fmtScore(t)}</div>
+      <div class="player-card-score" data-total="${t}">${fmtScore(t)}</div>
     `;
     board.appendChild(card);
   });
+
+  // Animate score changes from previous render (count up/down effect)
+  if (lastRenderedTotals) {
+    board.querySelectorAll('.player-card-score').forEach((el, i) => {
+      const prev = lastRenderedTotals[i];
+      const curr = totals[i];
+      if (prev !== curr && !isNaN(prev)) {
+        const sign = curr < 0 ? '−' : '';
+        const start = performance.now();
+        const dur = 550;
+        const delta = curr - prev;
+        function tick(now) {
+          const p = Math.min(1, (now - start) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = Math.round(prev + delta * eased);
+          el.textContent = val === 0 ? '0' : (val < 0 ? '−' : '') + Math.abs(val);
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+    });
+  }
+  lastRenderedTotals = totals.slice();
 
   // Wire up inline player-card clicks
   if (!isGameOver) {
@@ -3312,14 +3454,25 @@ function renderGame() {
   const winSlot = $('winnerSlot');
   if (isGameOver) {
     const winnerIdx = totals.indexOf(minScore);
+    const durationStr = formatGameDuration();
     winSlot.innerHTML = `
       <div class="winner-banner">
         <div class="winner-banner-label">الشنب</div>
         <div class="winner-banner-name">${escapeHtml(state.players[winnerIdx])}</div>
+        ${durationStr ? `<div class="winner-banner-duration">${durationStr}</div>` : ''}
       </div>
     `;
+    // Trigger victory sound + haptic once per game
+    if (!state.victoryTriggered) {
+      state.victoryTriggered = true;
+      setTimeout(() => {
+        playVictorySound();
+        vibrate('success');
+      }, 200);
+    }
   } else {
     winSlot.innerHTML = '';
+    state.victoryTriggered = false;
   }
 
   $('gameOverBtns').style.display = isGameOver ? 'flex' : 'none';
