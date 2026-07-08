@@ -2219,7 +2219,7 @@
     <div class="game-header">
       <div class="game-header-title">الهند</div>
       <div class="round-counter" id="roundCounter">
-        الجولة <span class="round-counter-num" id="roundNum">١</span> من ٩
+        الجولة <span class="round-counter-num" id="roundNum">1</span> من 9
       </div>
     </div>
     <div id="winnerSlot"></div>
@@ -2274,7 +2274,7 @@
 
     <div class="howto-list">
       <div class="howto-item">
-        <div class="howto-num">١</div>
+        <div class="howto-num">1</div>
         <div class="howto-text">
           <div class="howto-title">ابدأ اللعبة</div>
           <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
@@ -2336,7 +2336,7 @@
     </button>
     <div class="modal-grip"></div>
     <h3 class="modal-title">✨ ما الجديد</h3>
-    <p class="modal-step" id="whatsnewVersion" style="margin-bottom: 18px;">النسخة ١.٠.٣</p>
+    <p class="modal-step" id="whatsnewVersion" style="margin-bottom: 18px;">النسخة 1.0.4</p>
 
     <div class="howto-list">
       <div class="howto-item">
@@ -2358,7 +2358,7 @@
       <div class="howto-item">
         <div class="howto-num">±</div>
         <div class="howto-text">
-          <div class="howto-title">تعديل سريع ±١٠٠</div>
+          <div class="howto-title">تعديل سريع ±100</div>
           <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
         </div>
       </div>
@@ -2513,7 +2513,7 @@ function minTypeForFirst(playerIdx, totals) {
 const $ = (id) => document.getElementById(id);
 
 function toArabicDigits(num) {
-  return String(num).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
+  return String(num);
 }
 function fmtScore(n) {
   if (n === 0) return toArabicDigits(0);
@@ -3305,7 +3305,7 @@ function renderGame() {
     counter.textContent = 'اللعبة انتهت';
     counter.classList.add('ended');
   } else {
-    counter.innerHTML = 'الجولة <span class="round-counter-num">' + toArabicDigits(roundsPlayed + 1) + '</span> من ٩';
+    counter.innerHTML = 'الجولة <span class="round-counter-num">' + toArabicDigits(roundsPlayed + 1) + '</span> من 9';
     counter.classList.remove('ended');
   }
 
@@ -3525,8 +3525,8 @@ function renderInlinePicker() {
         <div class="rios-divider">أو</div>
         <div class="choice-grid three-col">
           <button class="choice-btn rios-type" data-itype="ريوس"><span>ريوس</span></button>
-          <button class="choice-btn adj-type adj-plus" data-itype="ADJ+"><span>+١٠٠</span></button>
-          <button class="choice-btn adj-type adj-minus" data-itype="ADJ-"><span>−١٠٠</span></button>
+          <button class="choice-btn adj-type adj-plus" data-itype="ADJ+"><span>+100</span></button>
+          <button class="choice-btn adj-type adj-minus" data-itype="ADJ-"><span>−100</span></button>
         </div>
       </div>
     `;
