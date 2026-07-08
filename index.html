@@ -1461,6 +1461,107 @@
     content: '⏱ ';
     margin-inline-end: 3px;
   }
+  /* "ما جاب الشنب" modal — shown when the declared last-round winner wouldn't actually finish first */
+  .miss-dialog {
+    background:
+      linear-gradient(135deg, #E85A48 0%, #C43B2A 45%, #8E2418 100%);
+    color: #FFF5F2;
+    padding: 30px 24px 24px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow:
+      inset 0 2px 0 rgba(255, 200, 190, 0.4),
+      inset 0 -2px 4px rgba(60, 10, 5, 0.35),
+      0 12px 40px rgba(0, 0, 0, 0.45);
+    border: 1.5px solid #6E1810;
+    width: 88%;
+    max-width: 380px;
+    position: relative;
+    overflow: hidden;
+    animation: missShake 0.55s ease-out, missGlow 2.4s ease-in-out infinite 0.55s;
+  }
+  .miss-dialog::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%);
+    pointer-events: none;
+  }
+  @keyframes missShake {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-9px); }
+    30%  { transform: translateX(8px); }
+    45%  { transform: translateX(-6px); }
+    60%  { transform: translateX(4px); }
+    75%  { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes missGlow {
+    0%, 100% {
+      box-shadow:
+        inset 0 2px 0 rgba(255, 200, 190, 0.4),
+        inset 0 -2px 4px rgba(60, 10, 5, 0.35),
+        0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+    50% {
+      box-shadow:
+        inset 0 2px 0 rgba(255, 200, 190, 0.55),
+        inset 0 -2px 4px rgba(60, 10, 5, 0.4),
+        0 12px 48px rgba(180, 40, 30, 0.6);
+    }
+  }
+  .miss-dialog-label {
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: rgba(255, 240, 235, 0.95);
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+  .miss-dialog-label::before, .miss-dialog-label::after {
+    content: '♛';
+    margin: 0 10px;
+    opacity: 0.7;
+  }
+  .miss-dialog-name {
+    font-family: 'Cairo', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: #FFFFFF;
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: rgba(255, 200, 190, 0.5);
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 2;
+  }
+  .miss-dialog-undo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 26px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    color: #FFFFFF;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    letter-spacing: 0.01em;
+  }
+  .miss-dialog-undo:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.24);
+  }
   @keyframes winnerGlow {
     0%, 100% {
       box-shadow:
@@ -2288,6 +2389,18 @@
   </div>
 </div>
 
+<!-- "ما جاب الشنب" modal — shown when the declared last-round winner wouldn't actually finish first -->
+<div class="dialog-overlay" id="missDialog">
+  <div class="miss-dialog">
+    <div class="miss-dialog-label">ما جاب الشنب!</div>
+    <div class="miss-dialog-name" id="missDialogName"></div>
+    <button class="miss-dialog-undo" id="missDialogUndo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+      <span>تراجع وحاول مرة ثانية</span>
+    </button>
+  </div>
+</div>
+
 <!-- Instructions Modal -->
 <div class="modal-overlay" id="howtoModal">
   <div class="modal">
@@ -2668,6 +2781,37 @@ function playVictorySound() {
   } catch(e) { /* silently ignore audio failures */ }
 }
 
+// Play a descending "disappointed" three-note motif when someone declares they'll
+// win the شنب but doesn't actually finish first.
+function playMissSound() {
+  try {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // Descending minor motif: A4, F4, D4 (sad-trombone-ish)
+    const notes = [440.00, 349.23, 293.66];
+    const t0 = audioCtx.currentTime;
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      const start = t0 + i * 0.18;
+      const dur = 0.5;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.12, start + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + dur);
+    });
+  } catch(e) { /* silently ignore audio failures */ }
+}
+
 // Format game duration as "45 دقيقة" or "1 ساعة و 20 دقيقة"
 function formatGameDuration() {
   if (!state.startTime) return '';
@@ -2707,6 +2851,27 @@ $('dialogCancel').addEventListener('click', () => {
 $('dialogConfirm').addEventListener('click', () => {
   $('confirmDialog').classList.remove('active');
   if (dialogResolver) { dialogResolver(true); dialogResolver = null; }
+});
+
+// "ما جاب الشنب" modal — shown when a last-round attempt wouldn't crown the declared winner
+function showMissModal(declaredName) {
+  $('missDialogName').textContent = declaredName;
+  $('missDialog').classList.add('active');
+  setTimeout(() => {
+    playMissSound();
+    vibrate('heavy');
+  }, 150);
+}
+function hideMissModal() {
+  $('missDialog').classList.remove('active');
+}
+$('missDialogUndo').addEventListener('click', () => {
+  vibrate('light');
+  hideMissModal();
+});
+$('missDialog').addEventListener('click', e => {
+  // Tap outside the dialog box also closes it (same as pressing undo)
+  if (e.target === $('missDialog')) hideMissModal();
 });
 $('confirmDialog').addEventListener('click', e => {
   if (e.target === $('confirmDialog')) {
@@ -3418,18 +3583,13 @@ function renderGame() {
   // Always re-sync the inline picker DOM with state (clears it when phase=null)
   renderInlinePicker();
 
-  // Final-round hints strip: one column per player, aligned with scoreboard above
+  // Final-round hints strip: recommendations for each player (title removed)
   const hintsStrip = $('hintsStrip');
   hintsStrip.innerHTML = '';
   if (isLastRound && !isGameOver) {
     const hints = state.players.map((_, i) => minTypeForFirst(i, totals));
     hintsStrip.innerHTML = `
       <div class="hints-strip">
-        <div class="hints-title">
-          <span class="hints-title-diamond"></span>
-          <span>آخر جولة — وش تهند عشان تجيب الشنب؟</span>
-          <span class="hints-title-diamond"></span>
-        </div>
         <div class="hints-grid">
           ${state.players.map((name, i) => `
             <div class="hint-cell">
@@ -3462,7 +3622,6 @@ function renderGame() {
         ${durationStr ? `<div class="winner-banner-duration">${durationStr}</div>` : ''}
       </div>
     `;
-    // Trigger victory sound + haptic once per game
     if (!state.victoryTriggered) {
       state.victoryTriggered = true;
       setTimeout(() => {
@@ -3726,42 +3885,9 @@ function renderInlinePicker() {
           return;
         }
 
-        // Last-round validation: chosen type must be >= the minimum type that
-        // makes the winning player end up first overall.
-        if (isLastRound) {
-          const totals = getTotals();
-          const required = minTypeForFirst(state.inlinePending.winner, totals);
-
-          // If no type can make this player first, they can't win the شنب — block any normal hand
-          if (required === null) {
-            const winnerName = state.players[state.inlinePending.winner];
-            showDialog(
-              'ما تقدر تجيب الشنب',
-              `${winnerName} ما يقدر يجيب الشنب بأي نوع من الهند. اختار "ريوس" بس.`
-            );
-            return;
-          }
-
-          // If chosen type is below the required threshold, reject
-          const chosenIdx = TYPE_ORDER.indexOf(chosenType);
-          const requiredIdx = TYPE_ORDER.indexOf(required);
-          if (chosenIdx < requiredIdx) {
-            const winnerName = state.players[state.inlinePending.winner];
-            showDialog(
-              'ما تقدر تجيب الشنب بـ' + chosenType,
-              `${winnerName} ما يقدر يجيب الشنب بـ"${chosenType}". لازم على الأقل "${required}".`
-            );
-            return;
-          }
-
-          // Accepted — commit immediately without target selection.
-          // Last-round logic: winner gets winner_score, all 3 others get others_score.
-          state.inlinePending.type = chosenType;
-          commitInlineRoundLastRound();
-          return;
-        }
-
-        // Normal (non-last) round: proceed to target selection
+        // All rounds (including last) now go through the normal flow:
+        // pick type → pick target manually. Whether the declared "winner"
+        // actually wins is validated after the round is committed.
         state.inlinePending.type = chosenType;
         state.inlinePending.phase = 'pickTarget';
         renderGame(); // updates scoreboard tiles + picker (now shows floating cancel)
@@ -3909,6 +4035,26 @@ function commitInlineRound() {
       scores[i] = (i === ip.winner) ? rule.winner :
                    (i === ip.target) ? rule.target : rule.others;
     }
+
+    // LAST-ROUND SAFETY CHECK: if this commit would end the game, verify that
+    // the declared winner actually finishes strictly first (no ties). If they
+    // don't finish alone at the top → DO NOT record the round, show the modal.
+    const wouldBeLastRound = realRoundsCount() + 1 >= HAND_MAX_ROUNDS;
+    if (wouldBeLastRound) {
+      const currentTotals = getTotals();
+      const projectedTotals = currentTotals.map((t, i) => t + scores[i]);
+      const minVal = Math.min(...projectedTotals);
+      const tiedCount = projectedTotals.filter(t => t === minVal).length;
+      const declaredHasMin = projectedTotals[ip.winner] === minVal;
+      // Miss if: (a) declared winner isn't tied for first, OR (b) there's a tie at first
+      if (!declaredHasMin || tiedCount > 1) {
+        showMissModal(state.players[ip.winner]);
+        resetInline();
+        renderGame();
+        return;
+      }
+    }
+
     // Carry over any pending standalone placeholder (rios + adjustments) onto this new real round
     const carried = carryOverPendingRios();
     const newRound = { type: ip.type, winner: ip.winner, target: ip.target, scores };
