@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 8;
+const OTA_HTML_VERSION = 9;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -42,6 +42,8 @@ const OTA_HTML_VERSION = 8;
       if (isNaN(remoteVersion) || remoteVersion <= OTA_HTML_VERSION) return;
       // Newer version found — replace document with the fresh HTML.
       try { sessionStorage.setItem('_ota_swapped', 'yes'); } catch(e) {}
+      // Tell the new document not to replay the intro (prevents "double intro")
+      try { sessionStorage.setItem('_intro_shown', 'yes'); } catch(e) {}
       document.open();
       document.write(newHtml);
       document.close();
