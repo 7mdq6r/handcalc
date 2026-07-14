@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 19;
+const OTA_HTML_VERSION = 20;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -2006,14 +2006,10 @@ setTimeout(function() {
   }
   .rt-row + .rt-row { border-top: 1px solid var(--border-lo); }
   .rt-row.rios { background: rgba(166, 59, 47, 0.05); }
-  /* Highlighted rounds — light red background for rounds 3 and 6 */
+  /* Highlighted rounds — same subtle background as the header row */
   .rt-row[data-round-num="3"],
   .rt-row[data-round-num="6"] {
-    background: rgba(232, 90, 72, 0.14);
-  }
-  [data-theme="dark"] .rt-row[data-round-num="3"],
-  [data-theme="dark"] .rt-row[data-round-num="6"] {
-    background: rgba(232, 90, 72, 0.11);
+    background: var(--surface-2);
   }
   .rt-round-label {
     display: flex;
