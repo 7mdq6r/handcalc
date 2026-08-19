@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 21;
+const OTA_HTML_VERSION = 22;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -68,6 +68,9 @@ setTimeout(function() {
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B3A2C">
 <title>حاسبة الهند</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
 <style id="cairo-fonts">
 @font-face {
   font-family: 'Cairo';
@@ -362,7 +365,7 @@ setTimeout(function() {
     100% { opacity: 1; transform: scale(1) rotate(0deg); }
   }
   .intro-title {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Tajawal', 'Cairo', sans-serif;
     font-size: 42px;
     font-weight: 900;
     color: #F5D978;
@@ -618,7 +621,7 @@ setTimeout(function() {
   }
 
   .welcome-title {
-    font-family: 'Cairo', sans-serif;
+      font-family: 'Tajawal', 'Cairo', sans-serif;
     font-size: 56px;
     font-weight: 900;
     color: var(--gold-hi);
