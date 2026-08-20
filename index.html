@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -12,8 +13,9 @@
 
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
+
 <script>
-const OTA_HTML_VERSION = 22;
+const OTA_HTML_VERSION = 25;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -62,15 +64,20 @@ setTimeout(function() {
     el.style.visibility = 'hidden';
     if (el.parentNode) el.parentNode.removeChild(el);
   }
-}, 3000);
+}, 7000);
 </script>
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B3A2C">
 <title>حاسبة الهند</title>
+
+<!-- Tajawal font from Google Fonts (used for the main title) -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+
 <style id="cairo-fonts">
 @font-face {
   font-family: 'Cairo';
@@ -180,6 +187,7 @@ setTimeout(function() {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
+
 <style>
   :root {
     /* ═══ Light mode — clean, modern, premium feel with gold accents ═══ */
@@ -300,168 +308,217 @@ setTimeout(function() {
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-      radial-gradient(ellipse at center top, #0F5540 0%, #093726 55%, #051E14 100%);
+    background: radial-gradient(ellipse at 50% 40%, #FFFDF6 0%, #F6F1E4 50%, #EEE6D0 100%);
     opacity: 1;
     transition: opacity 0.6s ease-out;
     overflow: hidden;
     pointer-events: auto;
   }
-  .intro-screen::before {
-    /* Radial vignette glow behind the emblem */
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 500px;
-    height: 500px;
-    transform: translate(-50%, -60%);
-    background: radial-gradient(circle, rgba(232, 199, 88, 0.18) 0%, transparent 55%);
-    pointer-events: none;
-    animation: introGlow 3s ease-in-out infinite;
-  }
-  .intro-screen::after {
-    /* Subtle top shine sweep */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(232, 199, 88, 0.08), transparent);
-    transform: skewX(-20deg);
-    animation: introShine 2.4s ease-out 0.4s forwards;
-  }
-  @keyframes introGlow {
-    0%, 100% { opacity: 0.7; }
-    50%      { opacity: 1; }
-  }
-  @keyframes introShine {
-    0%   { left: -100%; }
-    100% { left: 130%; }
-  }
   .intro-screen.fading-out { opacity: 0; pointer-events: none; }
   .intro-screen.hidden { display: none; }
 
-  .intro-content {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    padding: 0 24px;
-  }
-  .intro-emblem {
-    width: 130px;
-    height: 130px;
-    margin: 0 auto 24px;
+  /* Subtle golden glow that fades in later (after cards land) */
+  .intro-screen::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 400px; height: 400px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(212, 169, 48, 0.15) 0%, transparent 60%);
+    pointer-events: none;
     opacity: 0;
-    transform: scale(0.4) rotate(-12deg);
-    animation: introEmblemIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
-    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5)) drop-shadow(0 2px 6px rgba(232, 199, 88, 0.3));
+    animation: introGlowIn 1s ease-out 3s forwards;
   }
-  .intro-emblem svg { width: 100%; height: 100%; }
-  @keyframes introEmblemIn {
-    0%   { opacity: 0; transform: scale(0.4) rotate(-12deg); }
-    60%  { opacity: 1; transform: scale(1.08) rotate(4deg); }
-    100% { opacity: 1; transform: scale(1) rotate(0deg); }
-  }
-  .intro-title {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-size: 42px;
-    font-weight: 900;
-    color: #F5D978;
-    letter-spacing: -0.01em;
-    margin-bottom: 14px;
-    opacity: 0;
-    transform: translateY(16px);
-    animation: introFadeUp 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.35s forwards;
-    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 30px rgba(232, 199, 88, 0.25);
-  }
-  .intro-divider {
+  @keyframes introGlowIn { to { opacity: 1; } }
+
+  /* ═══════════ Playing cards ═══════════ */
+  .intro-card {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 78px;
+    height: 112px;
+    background: linear-gradient(135deg, #FFFCF2 0%, #F0E8D0 100%);
+    border: 2px solid #C39520;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 14px;
+    font-size: 48px;
+    line-height: 1;
+    box-shadow: 0 12px 30px rgba(80, 60, 10, 0.35), inset 0 0 12px rgba(195, 149, 32, 0.18);
+    transform-origin: center;
     opacity: 0;
-    animation: introFadeIn 0.4s ease-out 0.6s forwards;
+    z-index: 20;
   }
-  .intro-divider::before,
-  .intro-divider::after {
-    content: '';
-    height: 1px;
-    width: 40px;
-    background: linear-gradient(90deg, transparent, rgba(232, 199, 88, 0.55), transparent);
+  .intro-card[data-suit="♥"], .intro-card[data-suit="♦"] { color: #B83A2C; }
+  .intro-card[data-suit="♠"], .intro-card[data-suit="♣"] { color: #0B3A2C; }
+  .intro-card::before, .intro-card::after {
+    content: attr(data-suit);
+    position: absolute;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .intro-card::before { top: 6px; right: 8px; }
+  .intro-card::after  { bottom: 6px; left: 8px; transform: rotate(180deg); }
+
+  /* Cards fall from top with gravity */
+  .intro-card-1 { animation: introDrop1 1.1s cubic-bezier(0.55, 0.06, 0.68, 0.19) 0s forwards; }
+  .intro-card-2 { animation: introDrop2 1.1s cubic-bezier(0.55, 0.06, 0.68, 0.19) 0.4s forwards; }
+  .intro-card-3 { animation: introDrop3 1.1s cubic-bezier(0.55, 0.06, 0.68, 0.19) 0.8s forwards; }
+  .intro-card-4 { animation: introDrop4 1.1s cubic-bezier(0.55, 0.06, 0.68, 0.19) 1.2s forwards; }
+  @keyframes introDrop1 {
+    0%   { opacity: 0; transform: translate(-50%, -50%) translate(-110px, -100vh) rotate(-8deg); }
+    5%   { opacity: 1; }
+    85%  { transform: translate(-50%, -50%) translate(-110px, 8px) rotate(-14deg); }
+    92%  { transform: translate(-50%, -50%) translate(-110px, -12px) rotate(-12deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) translate(-110px, 0) rotate(-14deg); }
+  }
+  @keyframes introDrop2 {
+    0%   { opacity: 0; transform: translate(-50%, -50%) translate(-35px, -100vh) rotate(2deg); }
+    5%   { opacity: 1; }
+    85%  { transform: translate(-50%, -50%) translate(-35px, 8px) rotate(-5deg); }
+    92%  { transform: translate(-50%, -50%) translate(-35px, -10px) rotate(-4deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) translate(-35px, 0) rotate(-5deg); }
+  }
+  @keyframes introDrop3 {
+    0%   { opacity: 0; transform: translate(-50%, -50%) translate(35px, -100vh) rotate(-2deg); }
+    5%   { opacity: 1; }
+    85%  { transform: translate(-50%, -50%) translate(35px, 8px) rotate(5deg); }
+    92%  { transform: translate(-50%, -50%) translate(35px, -10px) rotate(4deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) translate(35px, 0) rotate(5deg); }
+  }
+  @keyframes introDrop4 {
+    0%   { opacity: 0; transform: translate(-50%, -50%) translate(110px, -100vh) rotate(8deg); }
+    5%   { opacity: 1; }
+    85%  { transform: translate(-50%, -50%) translate(110px, 8px) rotate(14deg); }
+    92%  { transform: translate(-50%, -50%) translate(110px, -12px) rotate(12deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) translate(110px, 0) rotate(14deg); }
+  }
+
+  /* Cards merge to center after landing */
+  .intro-card.merge-1 { animation: introMerge1 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  .intro-card.merge-2 { animation: introMerge2 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.05s forwards; }
+  .intro-card.merge-3 { animation: introMerge3 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards; }
+  .intro-card.merge-4 { animation: introMerge4 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards; }
+  @keyframes introMerge1 { from { opacity: 1; transform: translate(-50%, -50%) translate(-110px, 0) rotate(-14deg) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(-180deg) scale(0.3); } }
+  @keyframes introMerge2 { from { opacity: 1; transform: translate(-50%, -50%) translate(-35px, 0) rotate(-5deg) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(-90deg) scale(0.3); } }
+  @keyframes introMerge3 { from { opacity: 1; transform: translate(-50%, -50%) translate(35px, 0) rotate(5deg) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(90deg) scale(0.3); } }
+  @keyframes introMerge4 { from { opacity: 1; transform: translate(-50%, -50%) translate(110px, 0) rotate(14deg) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(180deg) scale(0.3); } }
+
+  /* Dust puff on card landing */
+  .intro-dust {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    background: radial-gradient(circle, rgba(180, 140, 40, 0.55) 0%, rgba(180, 140, 40, 0.2) 40%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 25;
+  }
+  /* Screen shake on impact */
+  .intro-shake { animation: introShake 0.15s ease-in-out; }
+  @keyframes introShake {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(-3px, 2px); }
+    50%      { transform: translate(3px, -1px); }
+    75%      { transform: translate(-2px, 2px); }
+  }
+
+  /* Golden burst when cards merge into emblem */
+  .intro-burst {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 200px; height: 200px;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 217, 120, 0.7) 0%, rgba(212, 169, 48, 0.3) 40%, transparent 70%);
+    opacity: 0;
+    z-index: 15;
+    pointer-events: none;
+  }
+  .intro-burst.active { animation: introBurstOut 0.8s ease-out forwards; }
+  @keyframes introBurstOut {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+    30%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
+  }
+
+  /* Intro content wrapper */
+  .intro-content {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    padding: 0 24px;
+    opacity: 0;
+    animation: introContentIn 0.6s ease-out 3.3s forwards;
+  }
+  @keyframes introContentIn { to { opacity: 1; } }
+
+  /* Emblem — clean zoom-in */
+  .intro-emblem {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 26px;
+    opacity: 0;
+    transform: scale(0);
+    animation: introEmblemZoom 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 3.1s forwards;
+    filter: drop-shadow(0 12px 30px rgba(80, 60, 10, 0.4)) drop-shadow(0 0 25px rgba(245, 217, 120, 0.4));
+  }
+  .intro-emblem svg { width: 100%; height: 100%; }
+  @keyframes introEmblemZoom {
+    0%   { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Title */
+  .intro-title {
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-size: 50px;
+    font-weight: 900;
+    color: #0B3A2C;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: introFadeUp 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 3.6s forwards;
+    text-shadow: 0 3px 12px rgba(11, 58, 44, 0.12), 0 0 30px rgba(212, 169, 48, 0.2);
+    -webkit-text-stroke: 0.3px currentColor;
+  }
+  @keyframes introFadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* Divider */
+  .intro-divider {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin-bottom: 20px; opacity: 0;
+    animation: introFadeIn 0.6s ease-out 3.8s forwards;
+  }
+  .intro-divider-line {
+    height: 1px; width: 60px;
+    background: linear-gradient(90deg, transparent, rgba(180, 140, 40, 0.7), transparent);
   }
   .intro-divider-diamond {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 10px; height: 10px;
     background: linear-gradient(135deg, #F5D978, #C39520);
     transform: rotate(45deg);
-    box-shadow: 0 0 8px rgba(232, 199, 88, 0.5);
+    box-shadow: 0 0 12px rgba(212, 169, 48, 0.7);
   }
+  @keyframes introFadeIn { to { opacity: 1; } }
+
+  /* Subtitle */
   .intro-subtitle {
     font-family: 'Cairo', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(232, 199, 88, 0.75);
-    letter-spacing: 0.03em;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(120, 90, 25, 0.85);
+    letter-spacing: 0.04em;
     opacity: 0;
     transform: translateY(10px);
-    animation: introFadeUp 0.4s ease-out 0.7s forwards;
-  }
-  @keyframes introFadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes introFadeIn {
-    to { opacity: 1; }
+    animation: introFadeUp 0.6s ease-out 4s forwards;
   }
 
-  /* Loading progress bar under the subtitle — fills over the intro duration
-     to communicate "checking for updates" to the user */
-  .intro-progress {
-    margin: 26px auto 0;
-    width: 200px;
-    opacity: 0;
-    animation: introFadeIn 0.35s ease-out 0.75s forwards;
-  }
-  .intro-progress-track {
-    height: 3px;
-    background: rgba(232, 199, 88, 0.15);
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-  }
-  .intro-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg,
-      rgba(232, 199, 88, 0.4) 0%,
-      #F5D978 50%,
-      rgba(232, 199, 88, 0.4) 100%);
-    box-shadow: 0 0 8px rgba(232, 199, 88, 0.5);
-    border-radius: 2px;
-    animation: introProgressFill 0.75s cubic-bezier(0.25, 0.9, 0.35, 1) 0.75s forwards;
-    position: relative;
-  }
-  .intro-progress-fill::after {
-    /* Subtle shine sweep that continuously runs across the fill */
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: introProgressShine 1.2s ease-in-out infinite;
-  }
-  @keyframes introProgressFill {
-    0%   { width: 0%; }
-    100% { width: 100%; }
-  }
-  @keyframes introProgressShine {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
-  /* ═══════════════════ App shell ═══════════════════ */
+    /* ═══════════════════ App shell ═══════════════════ */
   .app {
     height: 100%;
     display: flex;
@@ -469,6 +526,14 @@ setTimeout(function() {
     padding-top: var(--safe-top);
     padding-bottom: var(--safe-bottom);
     position: relative;
+    transition: opacity 0.5s ease-in;
+  }
+  /* While the intro is fully visible, hide the app underneath so nothing
+     (like "حاسبة الهند") shows before the cards fall. Once the intro starts
+     fading out (.fading-out) or is removed entirely, the app fades in. */
+  #introScreen:not(.fading-out):not(.hidden) ~ .app {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .topbar {
@@ -621,7 +686,7 @@ setTimeout(function() {
   }
 
   .welcome-title {
-      font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-family: 'Tajawal', 'Cairo', sans-serif;
     font-size: 56px;
     font-weight: 900;
     color: var(--gold-hi);
@@ -2520,51 +2585,79 @@ setTimeout(function() {
     border-radius: 24px;
   }
 </style>
+
 </head>
 <body data-theme="light">
 
 <!-- ═══════════════════ Intro splash screen ═══════════════════ -->
+
 <div id="introScreen" class="intro-screen">
+  <!-- 4 playing cards falling from top (FIRST thing on screen) -->
+  <div class="intro-card intro-card-1" data-suit="♠">♠</div>
+  <div class="intro-card intro-card-2" data-suit="♥">♥</div>
+  <div class="intro-card intro-card-3" data-suit="♣">♣</div>
+  <div class="intro-card intro-card-4" data-suit="♦">♦</div>
+
+  <!-- Dust host (populated by JS on card landings) -->
+
+  <div id="introDustHost"></div>
+
+  <!-- Golden burst that plays when cards merge -->
+
+  <div class="intro-burst" id="introBurst"></div>
+
+  <!-- Main content: emblem, title, subtitle (appears after cards) -->
+
   <div class="intro-content">
     <div class="intro-emblem">
-      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="introGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#F5D978"/>
-            <stop offset="50%" stop-color="#D4A930"/>
-            <stop offset="100%" stop-color="#9E7E1C"/>
+          <linearGradient id="introGoldR" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"  stop-color="#FFEBB8"/>
+            <stop offset="35%" stop-color="#F5D978"/>
+            <stop offset="70%" stop-color="#D4A930"/>
+            <stop offset="100%" stop-color="#8B6914"/>
           </linearGradient>
-          <radialGradient id="introInnerGrad" cx="50%" cy="45%" r="50%">
-            <stop offset="0%" stop-color="#164A3A"/>
-            <stop offset="100%" stop-color="#0B3A2C"/>
+          <linearGradient id="introGoldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"  stop-color="#FFEBB8"/>
+            <stop offset="50%" stop-color="#D4A930"/>
+            <stop offset="100%" stop-color="#7A5C0F"/>
+          </linearGradient>
+          <radialGradient id="introEmeraldBg" cx="50%" cy="42%" r="65%">
+            <stop offset="0%"  stop-color="#227455"/>
+            <stop offset="55%" stop-color="#0F4230"/>
+            <stop offset="100%" stop-color="#052416"/>
           </radialGradient>
         </defs>
-        <circle cx="60" cy="60" r="56" fill="url(#introGoldGrad)"/>
-        <circle cx="60" cy="60" r="50" fill="url(#introInnerGrad)"/>
-        <circle cx="60" cy="60" r="50" fill="none" stroke="#E8C758" stroke-width="0.5" opacity="0.5"/>
-        <path d="M60 35 C 60 30, 54 27, 51 30 C 48 33, 50 38, 55 40 C 52 42, 51 45, 53 46 L 67 46 C 69 45, 68 42, 65 40 C 70 38, 72 33, 69 30 C 66 27, 60 30, 60 35 Z" fill="url(#introGoldGrad)"/>
-        <path d="M38 60 L 44 54 L 50 60 L 44 66 Z" fill="url(#introGoldGrad)"/>
-        <path d="M76 56 C 74 54, 71 55, 71 58 C 68 57, 66 60, 68 62 C 66 64, 68 67, 71 66 C 71 69, 74 70, 76 68 C 78 70, 81 69, 81 66 C 84 67, 86 64, 84 62 C 86 60, 84 57, 81 58 C 81 55, 78 54, 76 56 Z M75 68 L 75 73 L 78 73 L 78 68 Z" fill="url(#introGoldGrad)"/>
-        <path d="M60 87 C 60 87, 48 80, 48 72 C 48 68, 51 66, 54 66 C 57 66, 60 68, 60 71 C 60 68, 63 66, 66 66 C 69 66, 72 68, 72 72 C 72 80, 60 87, 60 87 Z" fill="url(#introGoldGrad)"/>
-        <circle cx="60" cy="60" r="3" fill="#E8C758"/>
+        <circle cx="150" cy="150" r="142" fill="url(#introGoldEdge)"/>
+        <circle cx="150" cy="150" r="128" fill="url(#introEmeraldBg)"/>
+        <circle cx="150" cy="150" r="122" fill="none" stroke="url(#introGoldR)" stroke-width="0.8" opacity="0.6"/>
+        <!-- Heart symbol as clean SVG path -->
+        <path d="M 150 200
+                 C 100 175, 75 140, 100 105
+                 C 120 85, 145 100, 150 120
+                 C 155 100, 180 85, 200 105
+                 C 225 140, 200 175, 150 200 Z"
+              fill="url(#introGoldR)"
+              stroke="#7A5C0F"
+              stroke-width="2"
+              stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="intro-title">حاسبة الهند</div>
     <div class="intro-divider">
+      <span class="intro-divider-line"></span>
       <span class="intro-divider-diamond"></span>
+      <span class="intro-divider-line"></span>
     </div>
     <div class="intro-subtitle">مجلس أبوشقله</div>
-    <div class="intro-progress">
-      <div class="intro-progress-track">
-        <div class="intro-progress-fill"></div>
-      </div>
-    </div>
   </div>
 </div>
 
 <div class="app">
 
   <!-- Topbar -->
+
   <div class="topbar">
     <button class="icon-btn hidden" id="backBtn" aria-label="رجوع">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -2581,84 +2674,87 @@ setTimeout(function() {
   </div>
 
   <!-- HOME — Welcome -->
+
   <div class="screen active" id="screen-home">
     <div class="welcome">
       <div class="welcome-emblem">
-        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#F5D978"/>
-              <stop offset="50%" stop-color="#D4A930"/>
-              <stop offset="100%" stop-color="#9E7E1C"/>
+            <linearGradient id="welcomeGoldR" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%"  stop-color="#FFEBB8"/>
+              <stop offset="35%" stop-color="#F5D978"/>
+              <stop offset="70%" stop-color="#D4A930"/>
+              <stop offset="100%" stop-color="#8B6914"/>
             </linearGradient>
-            <radialGradient id="innerGrad" cx="50%" cy="45%" r="50%">
-              <stop offset="0%" stop-color="#164A3A"/>
-              <stop offset="100%" stop-color="#0B3A2C"/>
+            <linearGradient id="welcomeGoldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stop-color="#FFEBB8"/>
+              <stop offset="50%" stop-color="#D4A930"/>
+              <stop offset="100%" stop-color="#7A5C0F"/>
+            </linearGradient>
+            <radialGradient id="welcomeEmeraldBg" cx="50%" cy="42%" r="65%">
+              <stop offset="0%"  stop-color="#227455"/>
+              <stop offset="55%" stop-color="#0F4230"/>
+              <stop offset="100%" stop-color="#052416"/>
             </radialGradient>
           </defs>
-          <!-- Outer gold double ring -->
-          <circle cx="60" cy="60" r="56" fill="url(#goldGrad)"/>
-          <circle cx="60" cy="60" r="52" fill="url(#innerGrad)"/>
-          <circle cx="60" cy="60" r="48" fill="none" stroke="url(#goldGrad)" stroke-width="0.8" opacity="0.6"/>
-          <!-- 4 suits arranged compass-style -->
-          <g fill="url(#goldGrad)">
-            <!-- Top: Spade -->
-            <path d="M60 24 C 56 28 50 32 50 38 C 50 42 53 45 57 45 C 58.5 45 59.5 44.5 60 44 L 60 48 L 57 52 L 63 52 L 60 48 L 60 44 C 60.5 44.5 61.5 45 63 45 C 67 45 70 42 70 38 C 70 32 64 28 60 24 Z"/>
-            <!-- Bottom: Heart (upside down) -->
-            <path d="M60 96 C 55 92 48 87 48 81 C 48 78 50 76 53 76 C 56 76 58 77 60 79 C 62 77 64 76 67 76 C 70 76 72 78 72 81 C 72 87 65 92 60 96 Z"/>
-            <!-- Right logical (left visually in RTL): Diamond -->
-            <path d="M28 60 L38 50 L48 60 L38 70 Z"/>
-            <!-- Left logical (right visually): Club -->
-            <circle cx="88" cy="54" r="5.5"/>
-            <circle cx="93" cy="62" r="5.5"/>
-            <circle cx="83" cy="62" r="5.5"/>
-            <path d="M85.5 66 L90.5 66 L91.5 72 L84.5 72 Z"/>
-          </g>
-          <!-- Center ornament -->
-          <circle cx="60" cy="60" r="5" fill="url(#goldGrad)"/>
-          <circle cx="60" cy="60" r="2" fill="#0B3A2C"/>
+          <circle cx="150" cy="150" r="142" fill="url(#welcomeGoldEdge)"/>
+          <circle cx="150" cy="150" r="128" fill="url(#welcomeEmeraldBg)"/>
+          <circle cx="150" cy="150" r="122" fill="none" stroke="url(#welcomeGoldR)" stroke-width="0.8" opacity="0.6"/>
+          <path d="M 150 200
+                   C 100 175, 75 140, 100 105
+                   C 120 85, 145 100, 150 120
+                   C 155 100, 180 85, 200 105
+                   C 225 140, 200 175, 150 200 Z"
+                fill="url(#welcomeGoldR)"
+                stroke="#7A5C0F"
+                stroke-width="2"
+                stroke-linejoin="round"/>
         </svg>
       </div>
 
-      <h1 class="welcome-title">حاسبة الهند</h1>
-      <p class="welcome-sub">قيّد نقاطك بسهولة وفخامة</p>
+```
+  <h1 class="welcome-title">حاسبة الهند</h1>
+  <p class="welcome-sub">قيّد نقاطك بسهولة وفخامة</p>
 
-      <div class="welcome-divider">
-        <div class="welcome-divider-center"></div>
-      </div>
-    </div>
+  <div class="welcome-divider">
+    <div class="welcome-divider-center"></div>
+  </div>
+</div>
 
-    <div class="home-btn-wrap">
-      <button class="gold-btn" id="startBtn">ابدأ اللعبة</button>
-      <button class="secondary-btn home-archive-btn" id="openArchiveBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
-        السجل
-      </button>
-    </div>
+<div class="home-btn-wrap">
+  <button class="gold-btn" id="startBtn">ابدأ اللعبة</button>
+  <button class="secondary-btn home-archive-btn" id="openArchiveBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+    السجل
+  </button>
+</div>
 
-    <div class="home-footer">
-      <span class="home-footer-text">مجلس أبوشقله</span>
-      <a href="https://www.snapchat.com/add/jjj" target="_blank" rel="noopener noreferrer" class="footer-snap" aria-label="سناب شات">
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-1.107-.435-1.257-.93-1.197-1.273.09-.479.674-.793 1.168-.793.146 0 .27.029.383.074.42.194.789.3 1.104.3.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z"/>
-        </svg>
-      </a>
-      <a href="https://www.instagram.com/albdwi" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="انستقرام">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="3" width="18" height="18" rx="5"/>
-          <circle cx="12" cy="12" r="4"/>
-          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-        </svg>
-      </a>
-      <button class="footer-social" id="privacyBtn" aria-label="سياسة الخصوصية" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/>
-        </svg>
-      </button>
-    </div>
+<div class="home-footer">
+  <span class="home-footer-text">مجلس أبوشقله</span>
+  <a href="https://www.snapchat.com/add/jjj" target="_blank" rel="noopener noreferrer" class="footer-snap" aria-label="سناب شات">
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-1.107-.435-1.257-.93-1.197-1.273.09-.479.674-.793 1.168-.793.146 0 .27.029.383.074.42.194.789.3 1.104.3.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z"/>
+    </svg>
+  </a>
+  <a href="https://www.instagram.com/albdwi" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="انستقرام">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="18" height="18" rx="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  </a>
+  <button class="footer-social" id="privacyBtn" aria-label="سياسة الخصوصية" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/>
+    </svg>
+  </button>
+</div>
+```
+
   </div>
 
   <!-- ARCHIVE -->
+
   <div class="screen" id="screen-archive">
     <div class="setup-header">
       <div class="setup-kicker">سجل اللعبات</div>
@@ -2668,6 +2764,7 @@ setTimeout(function() {
   </div>
 
   <!-- SETUP -->
+
   <div class="screen" id="screen-setup">
     <div class="setup-header">
       <div class="setup-kicker">إعداد اللعبة</div>
@@ -2680,6 +2777,7 @@ setTimeout(function() {
   </div>
 
   <!-- GAME -->
+
   <div class="screen" id="screen-game">
     <div class="game-header">
       <div class="game-header-title">الهند</div>
@@ -2712,6 +2810,7 @@ setTimeout(function() {
 </div>
 
 <!-- Confirm Dialog -->
+
 <div class="dialog-overlay" id="confirmDialog">
   <div class="dialog">
     <div class="dialog-icon">
@@ -2727,6 +2826,7 @@ setTimeout(function() {
 </div>
 
 <!-- "ما جاب الشنب" modal — shown when the declared last-round winner wouldn't actually finish first -->
+
 <div class="dialog-overlay" id="missDialog">
   <div class="miss-dialog">
     <div class="miss-dialog-label">ما جاب الشنب!</div>
@@ -2739,6 +2839,7 @@ setTimeout(function() {
 </div>
 
 <!-- Name edit modal — long-press a player card during play to open this -->
+
 <div class="dialog-overlay" id="nameEditDialog">
   <div class="dialog name-edit-dialog">
     <div class="dialog-icon name-edit-icon">
@@ -2754,69 +2855,74 @@ setTimeout(function() {
 </div>
 
 <!-- Instructions Modal -->
+
 <div class="modal-overlay" id="howtoModal">
   <div class="modal">
     <div class="modal-grip"></div>
     <h3 class="modal-title">كيف تستخدم الحاسبة</h3>
     <p class="modal-step" style="margin-bottom: 18px;">طريقة سهلة لتقييد نقاطك في لعبة الهند</p>
 
-    <div class="howto-list">
-      <div class="howto-item">
-        <div class="howto-num">١</div>
-        <div class="howto-text">
-          <div class="howto-title">ابدأ اللعبة</div>
-          <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">٢</div>
-        <div class="howto-text">
-          <div class="howto-title">سجّل النقاط</div>
-          <div class="howto-desc">اختر الفائز بالجولة وأدخل نقاط بقية اللاعبين، والحاسبة تجمع المجموع تلقائياً.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">٣</div>
-        <div class="howto-text">
-          <div class="howto-title">تراجع عن الخطأ</div>
-          <div class="howto-desc">زر «تراجع» يلغي آخر جولة سجّلتها إذا حصل خطأ في الإدخال.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">٤</div>
-        <div class="howto-text">
-          <div class="howto-title">الفائز</div>
-          <div class="howto-desc">في نهاية اللعبة، اللاعب صاحب أقل مجموع نقاط هو الفائز.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">٥</div>
-        <div class="howto-text">
-          <div class="howto-title">شارك النتيجة</div>
-          <div class="howto-desc">من زر «المشاركة» تطلع لك صورة جاهزة ترسلها لأصحابك.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">٦</div>
-        <div class="howto-text">
-          <div class="howto-title">السجل</div>
-          <div class="howto-desc">كل اللعبات السابقة محفوظة في «السجل» تقدر ترجع لها أي وقت.</div>
-        </div>
-      </div>
+```
+<div class="howto-list">
+  <div class="howto-item">
+    <div class="howto-num">١</div>
+    <div class="howto-text">
+      <div class="howto-title">ابدأ اللعبة</div>
+      <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
     </div>
+  </div>
 
-    <div class="modal-actions" style="margin-top: 18px;">
-      <button class="gold-btn" id="howtoCloseBtn">فهمت</button>
+  <div class="howto-item">
+    <div class="howto-num">٢</div>
+    <div class="howto-text">
+      <div class="howto-title">سجّل النقاط</div>
+      <div class="howto-desc">اختر الفائز بالجولة وأدخل نقاط بقية اللاعبين، والحاسبة تجمع المجموع تلقائياً.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">٣</div>
+    <div class="howto-text">
+      <div class="howto-title">تراجع عن الخطأ</div>
+      <div class="howto-desc">زر «تراجع» يلغي آخر جولة سجّلتها إذا حصل خطأ في الإدخال.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">٤</div>
+    <div class="howto-text">
+      <div class="howto-title">الفائز</div>
+      <div class="howto-desc">في نهاية اللعبة، اللاعب صاحب أقل مجموع نقاط هو الفائز.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">٥</div>
+    <div class="howto-text">
+      <div class="howto-title">شارك النتيجة</div>
+      <div class="howto-desc">من زر «المشاركة» تطلع لك صورة جاهزة ترسلها لأصحابك.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">٦</div>
+    <div class="howto-text">
+      <div class="howto-title">السجل</div>
+      <div class="howto-desc">كل اللعبات السابقة محفوظة في «السجل» تقدر ترجع لها أي وقت.</div>
     </div>
   </div>
 </div>
 
+<div class="modal-actions" style="margin-top: 18px;">
+  <button class="gold-btn" id="howtoCloseBtn">فهمت</button>
+</div>
+```
+
+  </div>
+</div>
+
 <!-- "What's New" Modal — shown once per app version on launch -->
+
 <div class="modal-overlay" id="whatsnewModal">
   <div class="modal">
     <button class="modal-close-x" id="whatsnewCloseX" aria-label="إغلاق">
@@ -2826,116 +2932,124 @@ setTimeout(function() {
     <h3 class="modal-title">✨ ما الجديد</h3>
     <p class="modal-step" id="whatsnewVersion" style="margin-bottom: 18px;">النسخة 1.0.4</p>
 
-    <div class="howto-list">
-      <div class="howto-item">
-        <div class="howto-num" style="background: linear-gradient(135deg, #5FBE8B, #2E8E5A);">☀</div>
-        <div class="howto-text">
-          <div class="howto-title">وضع نهاري جديد</div>
-          <div class="howto-desc">خلفية بيضاء أنيقة كافتراضي، مع زر تبديل سريع للوضع الليلي.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">🃏</div>
-        <div class="howto-text">
-          <div class="howto-title">نوع جديد: سيريال جوكر</div>
-          <div class="howto-desc">الفائز −٦٠٠ • الهند على +٣٠٠٠ • الباقي +٢٤٠٠</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">±</div>
-        <div class="howto-text">
-          <div class="howto-title">تعديل سريع ±١٠٠</div>
-          <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num" style="background: linear-gradient(135deg, #C84846, #973027);">⚡</div>
-        <div class="howto-text">
-          <div class="howto-title">ريوس بقيم جديدة</div>
-          <div class="howto-desc">أضفنا قيمتي ٢٤٠٠ و ٣٠٠٠ لخصومات الريوس.</div>
-        </div>
-      </div>
-
-      <div class="howto-item">
-        <div class="howto-num">🎯</div>
-        <div class="howto-text">
-          <div class="howto-title">تحسينات بصرية شاملة</div>
-          <div class="howto-desc">مربعات اللاعبين أنحف، الأرقام أوضح، والترتيب يُعرَض بالألوان (الأول أخضر/ذهبي، الأخير أحمر).</div>
-        </div>
-      </div>
+```
+<div class="howto-list">
+  <div class="howto-item">
+    <div class="howto-num" style="background: linear-gradient(135deg, #5FBE8B, #2E8E5A);">☀</div>
+    <div class="howto-text">
+      <div class="howto-title">وضع نهاري جديد</div>
+      <div class="howto-desc">خلفية بيضاء أنيقة كافتراضي، مع زر تبديل سريع للوضع الليلي.</div>
     </div>
+  </div>
 
-    <div class="modal-actions" style="margin-top: 18px;">
-      <button class="gold-btn" id="whatsnewOkBtn">ابدأ اللعب</button>
+  <div class="howto-item">
+    <div class="howto-num">🃏</div>
+    <div class="howto-text">
+      <div class="howto-title">نوع جديد: سيريال جوكر</div>
+      <div class="howto-desc">الفائز −٦٠٠ • الهند على +٣٠٠٠ • الباقي +٢٤٠٠</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">±</div>
+    <div class="howto-text">
+      <div class="howto-title">تعديل سريع ±١٠٠</div>
+      <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num" style="background: linear-gradient(135deg, #C84846, #973027);">⚡</div>
+    <div class="howto-text">
+      <div class="howto-title">ريوس بقيم جديدة</div>
+      <div class="howto-desc">أضفنا قيمتي ٢٤٠٠ و ٣٠٠٠ لخصومات الريوس.</div>
+    </div>
+  </div>
+
+  <div class="howto-item">
+    <div class="howto-num">🎯</div>
+    <div class="howto-text">
+      <div class="howto-title">تحسينات بصرية شاملة</div>
+      <div class="howto-desc">مربعات اللاعبين أنحف، الأرقام أوضح، والترتيب يُعرَض بالألوان (الأول أخضر/ذهبي، الأخير أحمر).</div>
     </div>
   </div>
 </div>
 
+<div class="modal-actions" style="margin-top: 18px;">
+  <button class="gold-btn" id="whatsnewOkBtn">ابدأ اللعب</button>
+</div>
+```
+
+  </div>
+</div>
+
 <!-- Privacy Modal -->
+
 <div class="modal-overlay" id="privacyModal">
   <div class="modal modal-tall">
     <div class="modal-grip"></div>
     <h3 class="modal-title">سياسة الخصوصية</h3>
     <p class="modal-step" style="margin-bottom: 8px;">آخر تحديث: ٢٧ أبريل ٢٠٢٦</p>
 
-    <div class="privacy-scroll">
-      <p class="privacy-intro">
-        نحن نقدّر خصوصيتك. تطبيق <strong>حاسبة الهند</strong> صُمّم بحيث لا يجمع
-        أي بيانات شخصية. هذه السياسة تشرح بوضوح كيف يعمل التطبيق فيما يخص
-        بياناتك.
-      </p>
+```
+<div class="privacy-scroll">
+  <p class="privacy-intro">
+    نحن نقدّر خصوصيتك. تطبيق <strong>حاسبة الهند</strong> صُمّم بحيث لا يجمع
+    أي بيانات شخصية. هذه السياسة تشرح بوضوح كيف يعمل التطبيق فيما يخص
+    بياناتك.
+  </p>
 
-      <h4 class="privacy-h">١. البيانات التي نجمعها</h4>
-      <p class="privacy-p"><strong>لا نجمع أي بيانات.</strong> التطبيق:</p>
-      <ul class="privacy-ul">
-        <li>لا يطلب منك إنشاء حساب</li>
-        <li>لا يستخدم خدمات تحليلات</li>
-        <li>لا يستخدم خدمات تتبع الأخطاء</li>
-        <li>لا يرسل أي معلومات إلى أي خادم</li>
-        <li>لا يتطلب اتصالاً بالإنترنت</li>
-      </ul>
+  <h4 class="privacy-h">١. البيانات التي نجمعها</h4>
+  <p class="privacy-p"><strong>لا نجمع أي بيانات.</strong> التطبيق:</p>
+  <ul class="privacy-ul">
+    <li>لا يطلب منك إنشاء حساب</li>
+    <li>لا يستخدم خدمات تحليلات</li>
+    <li>لا يستخدم خدمات تتبع الأخطاء</li>
+    <li>لا يرسل أي معلومات إلى أي خادم</li>
+    <li>لا يتطلب اتصالاً بالإنترنت</li>
+  </ul>
 
-      <h4 class="privacy-h">٢. البيانات المحلية على جهازك</h4>
-      <p class="privacy-p">التطبيق يحفظ بعض البيانات <strong>محلياً على جهازك فقط</strong>:</p>
-      <ul class="privacy-ul">
-        <li>أسماء اللاعبين التي أدخلتها</li>
-        <li>سجل الألعاب المنتهية (آخر ١٠٠ لعبة)</li>
-      </ul>
-      <p class="privacy-p">هذه البيانات لا تُرسل إلى أي مكان. تبقى على جهازك ويمكنك حذفها بحذف التطبيق.</p>
+  <h4 class="privacy-h">٢. البيانات المحلية على جهازك</h4>
+  <p class="privacy-p">التطبيق يحفظ بعض البيانات <strong>محلياً على جهازك فقط</strong>:</p>
+  <ul class="privacy-ul">
+    <li>أسماء اللاعبين التي أدخلتها</li>
+    <li>سجل الألعاب المنتهية (آخر ١٠٠ لعبة)</li>
+  </ul>
+  <p class="privacy-p">هذه البيانات لا تُرسل إلى أي مكان. تبقى على جهازك ويمكنك حذفها بحذف التطبيق.</p>
 
-      <h4 class="privacy-h">٣. الأذونات المطلوبة</h4>
-      <p class="privacy-p">التطبيق <strong>لا يطلب أي أذونات</strong> من نظام iOS:</p>
-      <ul class="privacy-ul">
-        <li>لا يصل إلى الكاميرا</li>
-        <li>لا يصل إلى الموقع الجغرافي</li>
-        <li>لا يصل إلى جهات الاتصال</li>
-        <li>لا يصل إلى الصور</li>
-        <li>لا يرسل إشعارات</li>
-      </ul>
+  <h4 class="privacy-h">٣. الأذونات المطلوبة</h4>
+  <p class="privacy-p">التطبيق <strong>لا يطلب أي أذونات</strong> من نظام iOS:</p>
+  <ul class="privacy-ul">
+    <li>لا يصل إلى الكاميرا</li>
+    <li>لا يصل إلى الموقع الجغرافي</li>
+    <li>لا يصل إلى جهات الاتصال</li>
+    <li>لا يصل إلى الصور</li>
+    <li>لا يرسل إشعارات</li>
+  </ul>
 
-      <h4 class="privacy-h">٤. مشاركة النتائج</h4>
-      <p class="privacy-p">عند استخدام ميزة "مشاركة النتيجة"، يولّد التطبيق صورة محلياً على جهازك ويستخدم نظام المشاركة الأصلي في iOS لتمكينك من مشاركتها مع تطبيقات أخرى. نحن لا نرى أو نخزن هذه الصور.</p>
+  <h4 class="privacy-h">٤. مشاركة النتائج</h4>
+  <p class="privacy-p">عند استخدام ميزة "مشاركة النتيجة"، يولّد التطبيق صورة محلياً على جهازك ويستخدم نظام المشاركة الأصلي في iOS لتمكينك من مشاركتها مع تطبيقات أخرى. نحن لا نرى أو نخزن هذه الصور.</p>
 
-      <h4 class="privacy-h">٥. الأطفال</h4>
-      <p class="privacy-p">التطبيق آمن للجميع ولا يحتوي محتوى غير مناسب. لا نجمع بيانات من أي مستخدم، بمن فيهم الأطفال تحت سن ١٣.</p>
+  <h4 class="privacy-h">٥. الأطفال</h4>
+  <p class="privacy-p">التطبيق آمن للجميع ولا يحتوي محتوى غير مناسب. لا نجمع بيانات من أي مستخدم، بمن فيهم الأطفال تحت سن ١٣.</p>
 
-      <h4 class="privacy-h">٦. التغييرات على هذه السياسة</h4>
-      <p class="privacy-p">قد نحدّث هذه السياسة من حين لآخر. سيُنشر أي تحديث مع تعديل تاريخ "آخر تحديث" أعلاه.</p>
+  <h4 class="privacy-h">٦. التغييرات على هذه السياسة</h4>
+  <p class="privacy-p">قد نحدّث هذه السياسة من حين لآخر. سيُنشر أي تحديث مع تعديل تاريخ "آخر تحديث" أعلاه.</p>
 
-      <h4 class="privacy-h">٧. التواصل</h4>
-      <p class="privacy-p">للتواصل، اضغط على زر <strong>السناب شات</strong> أو <strong>الانستقرام</strong> في الصفحة الرئيسية للتطبيق.</p>
-    </div>
+  <h4 class="privacy-h">٧. التواصل</h4>
+  <p class="privacy-p">للتواصل، اضغط على زر <strong>السناب شات</strong> أو <strong>الانستقرام</strong> في الصفحة الرئيسية للتطبيق.</p>
+</div>
 
-    <div class="modal-actions" style="margin-top: 14px;">
-      <button class="gold-btn" id="privacyCloseBtn">إغلاق</button>
-    </div>
+<div class="modal-actions" style="margin-top: 14px;">
+  <button class="gold-btn" id="privacyCloseBtn">إغلاق</button>
+</div>
+```
+
   </div>
 </div>
 
 <!-- Share Modal -->
+
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <div class="modal-grip"></div>
@@ -2964,12 +3078,12 @@ const state = {
 };
 
 const HAND_RULES = {
-  'عادي':       { winner: -60,  target: 300,  others: 200 },
-  'جوكر':       { winner: -120, target: 600,  others: 400 },
-  'جوكرين':     { winner: -240, target: 1200, others: 800 },
-  '٣ جواكر':    { winner: -360, target: 1600, others: 1200 },
-  'سيريل':      { winner: -480, target: 2400, others: 1800 },
-  'سيريال جوكر':{ winner: -600, target: 3000, others: 2400 },
+  'عادي':          { winner: -60,  target: 300,  others: 200 },
+  'جوكر':          { winner: -120, target: 600,  others: 400 },
+  'جوكرين':        { winner: -240, target: 1200, others: 800 },
+  '٣ جواكر':       { winner: -360, target: 1600, others: 1200 },
+  'سيريل':         { winner: -480, target: 2400, others: 1800 },
+  'سيريال جوكر':   { winner: -600, target: 3000, others: 2400 },
   'سيريال جوكرين': { winner: -720, target: 3600, others: 3000 },
 };
 const TYPE_ORDER = ['عادي', 'جوكر', 'جوكرين', '٣ جواكر', 'سيريل', 'سيريال جوكر', 'سيريال جوكرين'];
@@ -3278,17 +3392,19 @@ const SEEN_VERSION_KEY = 'handcalc_seen_version';
   if (!intro) return;
 
   // If the intro was already shown in this session (e.g. before an OTA swap),
-  // don't show it again — just remove it and get out of the user's way.
+  // don't show it again — but use a version-specific key so a new OTA
+  // release triggers the intro again for the user to see.
   try {
-    if (sessionStorage.getItem('_intro_shown') === 'yes') {
+    const INTRO_KEY = '_intro_shown_v' + OTA_HTML_VERSION;
+    if (sessionStorage.getItem(INTRO_KEY) === 'yes') {
       if (intro.parentNode) intro.parentNode.removeChild(intro);
       return;
     }
-    sessionStorage.setItem('_intro_shown', 'yes');
+    sessionStorage.setItem(INTRO_KEY, 'yes');
   } catch(e) {}
 
-  const TOTAL_MS = 1500;   // total visible time
-  const FADE_MS = 400;     // fade-out duration
+  const TOTAL_MS = 5000;   // total visible time (cards + emblem reveal + fade)
+  const FADE_MS = 600;     // fade-out duration
   let dismissed = false;
 
   function forceRemove() {
@@ -3306,10 +3422,63 @@ const SEEN_VERSION_KEY = 'handcalc_seen_version';
     setTimeout(forceRemove, FADE_MS);
   }
 
+  // ═══════════ Card landing effects (shake + dust puffs) ═══════════
+  const dustHost = document.getElementById('introDustHost');
+  const landTimes = [1100, 1500, 1900, 2300];  // when each card lands
+  const cardX = [-110, -35, 35, 110];
+
+  landTimes.forEach((t, i) => {
+    setTimeout(() => {
+      document.body.classList.add('intro-shake');
+      setTimeout(() => document.body.classList.remove('intro-shake'), 150);
+      if (dustHost) spawnDust(cardX[i], 0, dustHost);
+    }, t);
+  });
+
+  function spawnDust(offsetX, offsetY, host) {
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement('div');
+      d.className = 'intro-dust';
+      const angle = Math.PI + (Math.random() * Math.PI);
+      const dist  = 40 + Math.random() * 40;
+      const size  = 6 + Math.random() * 10;
+      const dur   = 500 + Math.random() * 400;
+      d.style.width = d.style.height = size + 'px';
+      d.style.transform = `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px)`;
+      host.appendChild(d);
+      requestAnimationFrame(() => {
+        d.style.transition = `transform ${dur}ms cubic-bezier(0.2, 0.9, 0.3, 1), opacity ${dur}ms ease-out`;
+        d.style.opacity = 1;
+        const tx = offsetX + Math.cos(angle) * dist;
+        const ty = offsetY + Math.sin(angle) * dist;
+        d.style.transform = `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(2)`;
+        setTimeout(() => { d.style.opacity = 0; }, dur * 0.5);
+        setTimeout(() => d.remove(), dur);
+      });
+    }
+  }
+
+  // Cards merge into center at 2.9s
+  setTimeout(() => {
+    const c1 = document.querySelector('.intro-card-1');
+    const c2 = document.querySelector('.intro-card-2');
+    const c3 = document.querySelector('.intro-card-3');
+    const c4 = document.querySelector('.intro-card-4');
+    if (c1) c1.classList.add('merge-1');
+    if (c2) c2.classList.add('merge-2');
+    if (c3) c3.classList.add('merge-3');
+    if (c4) c4.classList.add('merge-4');
+    // Golden burst as cards vanish
+    setTimeout(() => {
+      const burst = document.getElementById('introBurst');
+      if (burst) burst.classList.add('active');
+    }, 400);
+  }, 2900);
+
   // Primary dismiss timer
   setTimeout(dismiss, TOTAL_MS);
-  // Safety net #1: force-remove after 2.5s even if the primary path fails
-  setTimeout(forceRemove, 2500);
+  // Safety net: force-remove after 6.5s no matter what
+  setTimeout(forceRemove, 6500);
   // Tap anywhere on the intro to skip
   intro.addEventListener('click', dismiss);
   // Also dismiss on any touch/click on the whole document as extra safety
@@ -4568,5 +4737,6 @@ document.querySelectorAll('.footer-snap, .footer-social').forEach(link => {
 
 document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
+
 </body>
 </html>
