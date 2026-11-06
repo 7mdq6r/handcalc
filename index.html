@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -13,9 +12,8 @@
 
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
-
 <script>
-const OTA_HTML_VERSION = 26;
+const OTA_HTML_VERSION = 27;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -66,14 +64,12 @@ setTimeout(function() {
   }
 }, 7000);
 </script>
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B3A2C">
 <title>حاسبة الهند</title>
 
 <!-- Tajawal font from Google Fonts (used for the main title) -->
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
@@ -187,7 +183,6 @@ setTimeout(function() {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-
 <style>
   :root {
     /* ═══ Light mode — clean, modern, premium feel with gold accents ═══ */
@@ -2585,12 +2580,10 @@ setTimeout(function() {
     border-radius: 24px;
   }
 </style>
-
 </head>
 <body data-theme="light">
 
 <!-- ═══════════════════ Intro splash screen ═══════════════════ -->
-
 <div id="introScreen" class="intro-screen">
   <!-- 4 playing cards falling from top (FIRST thing on screen) -->
   <div class="intro-card intro-card-1" data-suit="♠">♠</div>
@@ -2599,15 +2592,12 @@ setTimeout(function() {
   <div class="intro-card intro-card-4" data-suit="♦">♦</div>
 
   <!-- Dust host (populated by JS on card landings) -->
-
   <div id="introDustHost"></div>
 
   <!-- Golden burst that plays when cards merge -->
-
   <div class="intro-burst" id="introBurst"></div>
 
   <!-- Main content: emblem, title, subtitle (appears after cards) -->
-
   <div class="intro-content">
     <div class="intro-emblem">
       <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
@@ -2657,7 +2647,6 @@ setTimeout(function() {
 <div class="app">
 
   <!-- Topbar -->
-
   <div class="topbar">
     <button class="icon-btn hidden" id="backBtn" aria-label="رجوع">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -2674,7 +2663,6 @@ setTimeout(function() {
   </div>
 
   <!-- HOME — Welcome -->
-
   <div class="screen active" id="screen-home">
     <div class="welcome">
       <div class="welcome-emblem">
@@ -2712,49 +2700,45 @@ setTimeout(function() {
         </svg>
       </div>
 
-```
-  <h1 class="welcome-title">حاسبة الهند</h1>
-  <p class="welcome-sub">قيّد نقاطك بسهولة وفخامة</p>
+      <h1 class="welcome-title">حاسبة الهند</h1>
+      <p class="welcome-sub">قيّد نقاطك بسهولة وفخامة</p>
 
-  <div class="welcome-divider">
-    <div class="welcome-divider-center"></div>
-  </div>
-</div>
+      <div class="welcome-divider">
+        <div class="welcome-divider-center"></div>
+      </div>
+    </div>
 
-<div class="home-btn-wrap">
-  <button class="gold-btn" id="startBtn">ابدأ اللعبة</button>
-  <button class="secondary-btn home-archive-btn" id="openArchiveBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
-    السجل
-  </button>
-</div>
+    <div class="home-btn-wrap">
+      <button class="gold-btn" id="startBtn">ابدأ اللعبة</button>
+      <button class="secondary-btn home-archive-btn" id="openArchiveBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+        السجل
+      </button>
+    </div>
 
-<div class="home-footer">
-  <span class="home-footer-text">مجلس أبوشقله</span>
-  <a href="https://www.snapchat.com/add/jjj" target="_blank" rel="noopener noreferrer" class="footer-snap" aria-label="سناب شات">
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-1.107-.435-1.257-.93-1.197-1.273.09-.479.674-.793 1.168-.793.146 0 .27.029.383.074.42.194.789.3 1.104.3.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z"/>
-    </svg>
-  </a>
-  <a href="https://www.instagram.com/albdwi" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="انستقرام">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="3" width="18" height="18" rx="5"/>
-      <circle cx="12" cy="12" r="4"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-    </svg>
-  </a>
-  <button class="footer-social" id="privacyBtn" aria-label="سياسة الخصوصية" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/>
-    </svg>
-  </button>
-</div>
-```
-
+    <div class="home-footer">
+      <span class="home-footer-text">مجلس أبوشقله</span>
+      <a href="https://www.snapchat.com/add/jjj" target="_blank" rel="noopener noreferrer" class="footer-snap" aria-label="سناب شات">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-1.107-.435-1.257-.93-1.197-1.273.09-.479.674-.793 1.168-.793.146 0 .27.029.383.074.42.194.789.3 1.104.3.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com/albdwi" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="انستقرام">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <button class="footer-social" id="privacyBtn" aria-label="سياسة الخصوصية" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <!-- ARCHIVE -->
-
   <div class="screen" id="screen-archive">
     <div class="setup-header">
       <div class="setup-kicker">سجل اللعبات</div>
@@ -2764,7 +2748,6 @@ setTimeout(function() {
   </div>
 
   <!-- SETUP -->
-
   <div class="screen" id="screen-setup">
     <div class="setup-header">
       <div class="setup-kicker">إعداد اللعبة</div>
@@ -2777,7 +2760,6 @@ setTimeout(function() {
   </div>
 
   <!-- GAME -->
-
   <div class="screen" id="screen-game">
     <div class="game-header">
       <div class="game-header-title">الهند</div>
@@ -2810,7 +2792,6 @@ setTimeout(function() {
 </div>
 
 <!-- Confirm Dialog -->
-
 <div class="dialog-overlay" id="confirmDialog">
   <div class="dialog">
     <div class="dialog-icon">
@@ -2826,7 +2807,6 @@ setTimeout(function() {
 </div>
 
 <!-- "ما جاب الشنب" modal — shown when the declared last-round winner wouldn't actually finish first -->
-
 <div class="dialog-overlay" id="missDialog">
   <div class="miss-dialog">
     <div class="miss-dialog-label">ما جاب الشنب!</div>
@@ -2839,7 +2819,6 @@ setTimeout(function() {
 </div>
 
 <!-- Name edit modal — long-press a player card during play to open this -->
-
 <div class="dialog-overlay" id="nameEditDialog">
   <div class="dialog name-edit-dialog">
     <div class="dialog-icon name-edit-icon">
@@ -2855,74 +2834,69 @@ setTimeout(function() {
 </div>
 
 <!-- Instructions Modal -->
-
 <div class="modal-overlay" id="howtoModal">
   <div class="modal">
     <div class="modal-grip"></div>
     <h3 class="modal-title">كيف تستخدم الحاسبة</h3>
     <p class="modal-step" style="margin-bottom: 18px;">طريقة سهلة لتقييد نقاطك في لعبة الهند</p>
 
-```
-<div class="howto-list">
-  <div class="howto-item">
-    <div class="howto-num">١</div>
-    <div class="howto-text">
-      <div class="howto-title">ابدأ اللعبة</div>
-      <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
+    <div class="howto-list">
+      <div class="howto-item">
+        <div class="howto-num">١</div>
+        <div class="howto-text">
+          <div class="howto-title">ابدأ اللعبة</div>
+          <div class="howto-desc">اضغط «ابدأ اللعبة» وأدخل أسماء اللاعبين.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">٢</div>
+        <div class="howto-text">
+          <div class="howto-title">سجّل النقاط</div>
+          <div class="howto-desc">اختر الفائز بالجولة وأدخل نقاط بقية اللاعبين، والحاسبة تجمع المجموع تلقائياً.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">٣</div>
+        <div class="howto-text">
+          <div class="howto-title">تراجع عن الخطأ</div>
+          <div class="howto-desc">زر «تراجع» يلغي آخر جولة سجّلتها إذا حصل خطأ في الإدخال.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">٤</div>
+        <div class="howto-text">
+          <div class="howto-title">الفائز</div>
+          <div class="howto-desc">في نهاية اللعبة، اللاعب صاحب أقل مجموع نقاط هو الفائز.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">٥</div>
+        <div class="howto-text">
+          <div class="howto-title">شارك النتيجة</div>
+          <div class="howto-desc">من زر «المشاركة» تطلع لك صورة جاهزة ترسلها لأصحابك.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">٦</div>
+        <div class="howto-text">
+          <div class="howto-title">السجل</div>
+          <div class="howto-desc">كل اللعبات السابقة محفوظة في «السجل» تقدر ترجع لها أي وقت.</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="howto-item">
-    <div class="howto-num">٢</div>
-    <div class="howto-text">
-      <div class="howto-title">سجّل النقاط</div>
-      <div class="howto-desc">اختر الفائز بالجولة وأدخل نقاط بقية اللاعبين، والحاسبة تجمع المجموع تلقائياً.</div>
+    <div class="modal-actions" style="margin-top: 18px;">
+      <button class="gold-btn" id="howtoCloseBtn">فهمت</button>
     </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">٣</div>
-    <div class="howto-text">
-      <div class="howto-title">تراجع عن الخطأ</div>
-      <div class="howto-desc">زر «تراجع» يلغي آخر جولة سجّلتها إذا حصل خطأ في الإدخال.</div>
-    </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">٤</div>
-    <div class="howto-text">
-      <div class="howto-title">الفائز</div>
-      <div class="howto-desc">في نهاية اللعبة، اللاعب صاحب أقل مجموع نقاط هو الفائز.</div>
-    </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">٥</div>
-    <div class="howto-text">
-      <div class="howto-title">شارك النتيجة</div>
-      <div class="howto-desc">من زر «المشاركة» تطلع لك صورة جاهزة ترسلها لأصحابك.</div>
-    </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">٦</div>
-    <div class="howto-text">
-      <div class="howto-title">السجل</div>
-      <div class="howto-desc">كل اللعبات السابقة محفوظة في «السجل» تقدر ترجع لها أي وقت.</div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-actions" style="margin-top: 18px;">
-  <button class="gold-btn" id="howtoCloseBtn">فهمت</button>
-</div>
-```
-
   </div>
 </div>
 
 <!-- "What's New" Modal — shown once per app version on launch -->
-
 <div class="modal-overlay" id="whatsnewModal">
   <div class="modal">
     <button class="modal-close-x" id="whatsnewCloseX" aria-label="إغلاق">
@@ -2932,124 +2906,116 @@ setTimeout(function() {
     <h3 class="modal-title">✨ ما الجديد</h3>
     <p class="modal-step" id="whatsnewVersion" style="margin-bottom: 18px;">النسخة 1.0.4</p>
 
-```
-<div class="howto-list">
-  <div class="howto-item">
-    <div class="howto-num" style="background: linear-gradient(135deg, #5FBE8B, #2E8E5A);">☀</div>
-    <div class="howto-text">
-      <div class="howto-title">وضع نهاري جديد</div>
-      <div class="howto-desc">خلفية بيضاء أنيقة كافتراضي، مع زر تبديل سريع للوضع الليلي.</div>
+    <div class="howto-list">
+      <div class="howto-item">
+        <div class="howto-num" style="background: linear-gradient(135deg, #5FBE8B, #2E8E5A);">☀</div>
+        <div class="howto-text">
+          <div class="howto-title">وضع نهاري جديد</div>
+          <div class="howto-desc">خلفية بيضاء أنيقة كافتراضي، مع زر تبديل سريع للوضع الليلي.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">🃏</div>
+        <div class="howto-text">
+          <div class="howto-title">نوع جديد: سيريال جوكر</div>
+          <div class="howto-desc">الفائز −٦٠٠ • الهند على +٣٠٠٠ • الباقي +٢٤٠٠</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">±</div>
+        <div class="howto-text">
+          <div class="howto-title">تعديل سريع ±١٠٠</div>
+          <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num" style="background: linear-gradient(135deg, #C84846, #973027);">⚡</div>
+        <div class="howto-text">
+          <div class="howto-title">ريوس بقيم جديدة</div>
+          <div class="howto-desc">أضفنا قيمتي ٢٤٠٠ و ٣٠٠٠ لخصومات الريوس.</div>
+        </div>
+      </div>
+
+      <div class="howto-item">
+        <div class="howto-num">🎯</div>
+        <div class="howto-text">
+          <div class="howto-title">تحسينات بصرية شاملة</div>
+          <div class="howto-desc">مربعات اللاعبين أنحف، الأرقام أوضح، والترتيب يُعرَض بالألوان (الأول أخضر/ذهبي، الأخير أحمر).</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="howto-item">
-    <div class="howto-num">🃏</div>
-    <div class="howto-text">
-      <div class="howto-title">نوع جديد: سيريال جوكر</div>
-      <div class="howto-desc">الفائز −٦٠٠ • الهند على +٣٠٠٠ • الباقي +٢٤٠٠</div>
+    <div class="modal-actions" style="margin-top: 18px;">
+      <button class="gold-btn" id="whatsnewOkBtn">ابدأ اللعب</button>
     </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">±</div>
-    <div class="howto-text">
-      <div class="howto-title">تعديل سريع ±١٠٠</div>
-      <div class="howto-desc">إضافة أو خصم ١٠٠ نقطة لأي لاعب من نفس الجولة، حتى قبل البدء.</div>
-    </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num" style="background: linear-gradient(135deg, #C84846, #973027);">⚡</div>
-    <div class="howto-text">
-      <div class="howto-title">ريوس بقيم جديدة</div>
-      <div class="howto-desc">أضفنا قيمتي ٢٤٠٠ و ٣٠٠٠ لخصومات الريوس.</div>
-    </div>
-  </div>
-
-  <div class="howto-item">
-    <div class="howto-num">🎯</div>
-    <div class="howto-text">
-      <div class="howto-title">تحسينات بصرية شاملة</div>
-      <div class="howto-desc">مربعات اللاعبين أنحف، الأرقام أوضح، والترتيب يُعرَض بالألوان (الأول أخضر/ذهبي، الأخير أحمر).</div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-actions" style="margin-top: 18px;">
-  <button class="gold-btn" id="whatsnewOkBtn">ابدأ اللعب</button>
-</div>
-```
-
   </div>
 </div>
 
 <!-- Privacy Modal -->
-
 <div class="modal-overlay" id="privacyModal">
   <div class="modal modal-tall">
     <div class="modal-grip"></div>
     <h3 class="modal-title">سياسة الخصوصية</h3>
     <p class="modal-step" style="margin-bottom: 8px;">آخر تحديث: ٢٧ أبريل ٢٠٢٦</p>
 
-```
-<div class="privacy-scroll">
-  <p class="privacy-intro">
-    نحن نقدّر خصوصيتك. تطبيق <strong>حاسبة الهند</strong> صُمّم بحيث لا يجمع
-    أي بيانات شخصية. هذه السياسة تشرح بوضوح كيف يعمل التطبيق فيما يخص
-    بياناتك.
-  </p>
+    <div class="privacy-scroll">
+      <p class="privacy-intro">
+        نحن نقدّر خصوصيتك. تطبيق <strong>حاسبة الهند</strong> صُمّم بحيث لا يجمع
+        أي بيانات شخصية. هذه السياسة تشرح بوضوح كيف يعمل التطبيق فيما يخص
+        بياناتك.
+      </p>
 
-  <h4 class="privacy-h">١. البيانات التي نجمعها</h4>
-  <p class="privacy-p"><strong>لا نجمع أي بيانات.</strong> التطبيق:</p>
-  <ul class="privacy-ul">
-    <li>لا يطلب منك إنشاء حساب</li>
-    <li>لا يستخدم خدمات تحليلات</li>
-    <li>لا يستخدم خدمات تتبع الأخطاء</li>
-    <li>لا يرسل أي معلومات إلى أي خادم</li>
-    <li>لا يتطلب اتصالاً بالإنترنت</li>
-  </ul>
+      <h4 class="privacy-h">١. البيانات التي نجمعها</h4>
+      <p class="privacy-p"><strong>لا نجمع أي بيانات.</strong> التطبيق:</p>
+      <ul class="privacy-ul">
+        <li>لا يطلب منك إنشاء حساب</li>
+        <li>لا يستخدم خدمات تحليلات</li>
+        <li>لا يستخدم خدمات تتبع الأخطاء</li>
+        <li>لا يرسل أي معلومات إلى أي خادم</li>
+        <li>لا يتطلب اتصالاً بالإنترنت</li>
+      </ul>
 
-  <h4 class="privacy-h">٢. البيانات المحلية على جهازك</h4>
-  <p class="privacy-p">التطبيق يحفظ بعض البيانات <strong>محلياً على جهازك فقط</strong>:</p>
-  <ul class="privacy-ul">
-    <li>أسماء اللاعبين التي أدخلتها</li>
-    <li>سجل الألعاب المنتهية (آخر ١٠٠ لعبة)</li>
-  </ul>
-  <p class="privacy-p">هذه البيانات لا تُرسل إلى أي مكان. تبقى على جهازك ويمكنك حذفها بحذف التطبيق.</p>
+      <h4 class="privacy-h">٢. البيانات المحلية على جهازك</h4>
+      <p class="privacy-p">التطبيق يحفظ بعض البيانات <strong>محلياً على جهازك فقط</strong>:</p>
+      <ul class="privacy-ul">
+        <li>أسماء اللاعبين التي أدخلتها</li>
+        <li>سجل الألعاب المنتهية (آخر ١٠٠ لعبة)</li>
+      </ul>
+      <p class="privacy-p">هذه البيانات لا تُرسل إلى أي مكان. تبقى على جهازك ويمكنك حذفها بحذف التطبيق.</p>
 
-  <h4 class="privacy-h">٣. الأذونات المطلوبة</h4>
-  <p class="privacy-p">التطبيق <strong>لا يطلب أي أذونات</strong> من نظام iOS:</p>
-  <ul class="privacy-ul">
-    <li>لا يصل إلى الكاميرا</li>
-    <li>لا يصل إلى الموقع الجغرافي</li>
-    <li>لا يصل إلى جهات الاتصال</li>
-    <li>لا يصل إلى الصور</li>
-    <li>لا يرسل إشعارات</li>
-  </ul>
+      <h4 class="privacy-h">٣. الأذونات المطلوبة</h4>
+      <p class="privacy-p">التطبيق <strong>لا يطلب أي أذونات</strong> من نظام iOS:</p>
+      <ul class="privacy-ul">
+        <li>لا يصل إلى الكاميرا</li>
+        <li>لا يصل إلى الموقع الجغرافي</li>
+        <li>لا يصل إلى جهات الاتصال</li>
+        <li>لا يصل إلى الصور</li>
+        <li>لا يرسل إشعارات</li>
+      </ul>
 
-  <h4 class="privacy-h">٤. مشاركة النتائج</h4>
-  <p class="privacy-p">عند استخدام ميزة "مشاركة النتيجة"، يولّد التطبيق صورة محلياً على جهازك ويستخدم نظام المشاركة الأصلي في iOS لتمكينك من مشاركتها مع تطبيقات أخرى. نحن لا نرى أو نخزن هذه الصور.</p>
+      <h4 class="privacy-h">٤. مشاركة النتائج</h4>
+      <p class="privacy-p">عند استخدام ميزة "مشاركة النتيجة"، يولّد التطبيق صورة محلياً على جهازك ويستخدم نظام المشاركة الأصلي في iOS لتمكينك من مشاركتها مع تطبيقات أخرى. نحن لا نرى أو نخزن هذه الصور.</p>
 
-  <h4 class="privacy-h">٥. الأطفال</h4>
-  <p class="privacy-p">التطبيق آمن للجميع ولا يحتوي محتوى غير مناسب. لا نجمع بيانات من أي مستخدم، بمن فيهم الأطفال تحت سن ١٣.</p>
+      <h4 class="privacy-h">٥. الأطفال</h4>
+      <p class="privacy-p">التطبيق آمن للجميع ولا يحتوي محتوى غير مناسب. لا نجمع بيانات من أي مستخدم، بمن فيهم الأطفال تحت سن ١٣.</p>
 
-  <h4 class="privacy-h">٦. التغييرات على هذه السياسة</h4>
-  <p class="privacy-p">قد نحدّث هذه السياسة من حين لآخر. سيُنشر أي تحديث مع تعديل تاريخ "آخر تحديث" أعلاه.</p>
+      <h4 class="privacy-h">٦. التغييرات على هذه السياسة</h4>
+      <p class="privacy-p">قد نحدّث هذه السياسة من حين لآخر. سيُنشر أي تحديث مع تعديل تاريخ "آخر تحديث" أعلاه.</p>
 
-  <h4 class="privacy-h">٧. التواصل</h4>
-  <p class="privacy-p">للتواصل، اضغط على زر <strong>السناب شات</strong> أو <strong>الانستقرام</strong> في الصفحة الرئيسية للتطبيق.</p>
-</div>
+      <h4 class="privacy-h">٧. التواصل</h4>
+      <p class="privacy-p">للتواصل، اضغط على زر <strong>السناب شات</strong> أو <strong>الانستقرام</strong> في الصفحة الرئيسية للتطبيق.</p>
+    </div>
 
-<div class="modal-actions" style="margin-top: 14px;">
-  <button class="gold-btn" id="privacyCloseBtn">إغلاق</button>
-</div>
-```
-
+    <div class="modal-actions" style="margin-top: 14px;">
+      <button class="gold-btn" id="privacyCloseBtn">إغلاق</button>
+    </div>
   </div>
 </div>
 
 <!-- Share Modal -->
-
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <div class="modal-grip"></div>
@@ -3081,7 +3047,7 @@ const HAND_RULES = {
   'عادي':          { winner: -60,  target: 300,  others: 200 },
   'جوكر':          { winner: -120, target: 600,  others: 400 },
   'جوكرين':        { winner: -240, target: 1200, others: 800 },
-'٣ جواكر':       { winner: -360, target: 1800, others: 1200 },
+  '٣ جواكر':       { winner: -360, target: 1800, others: 1200 },
   'سيريل':         { winner: -480, target: 2400, others: 1800 },
   'سيريال جوكر':   { winner: -600, target: 3000, others: 2400 },
   'سيريال جوكرين': { winner: -720, target: 3600, others: 3000 },
@@ -3201,6 +3167,9 @@ function showScreen(id) {
   };
   $('topbarTitle').textContent = titles[id] || 'حاسبة الهند';
   $(id).scrollTop = 0;
+
+  // Persist screen so we can resume on next app open
+  try { saveCurrentState(); } catch(e) {}
 }
 
 /* ═══════════════════ Custom dialog ═══════════════════ */
@@ -3569,6 +3538,8 @@ $('backBtn').addEventListener('click', async () => {
     const ok = await showDialog('الخروج من اللعبة', 'ستفقد جميع الجولات الحالية. هل تريد الخروج؟');
     if (ok) {
       state.rounds = [];
+      state.lastSavedGameId = null;
+      clearCurrentState(); // user chose to discard — remove saved game
       showScreen('screen-home');
     }
   }
@@ -3576,6 +3547,8 @@ $('backBtn').addEventListener('click', async () => {
 
 /* ═══════════════════ Storage & Archive ═══════════════════ */
 const ARCHIVE_KEY = 'hand_calc_archive_v1';
+const STATE_KEY   = 'hand_calc_current_state_v1';
+const ARCHIVE_MAX = 10; // keep only the last 10 games in the archive
 
 function loadArchive() {
   try {
@@ -3595,6 +3568,36 @@ function saveArchive(arr) {
     return false;
   }
 }
+
+/* Persist the in-progress game so closing/reopening the app resumes it. */
+function saveCurrentState() {
+  try {
+    // Only save if there's an actual game in progress (at least one round
+    // or the player entered names and started playing)
+    if (state.rounds.length === 0 && state.screen !== 'play') return;
+    const toSave = {
+      screen: state.screen,
+      players: state.players,
+      rounds: state.rounds,
+      startTime: state.startTime,
+      lastSavedGameId: state.lastSavedGameId,
+    };
+    localStorage.setItem(STATE_KEY, JSON.stringify(toSave));
+  } catch (e) {}
+}
+function loadCurrentState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+function clearCurrentState() {
+  try { localStorage.removeItem(STATE_KEY); } catch (e) {}
+}
+
 function archiveCurrentGame() {
   // Use getTotals() so rios penalties AND ±100 adjustments are included.
   // (The old version summed r.scores only, which gave wrong archived totals.)
@@ -3614,9 +3617,11 @@ function archiveCurrentGame() {
   // Avoid double-saving the same game (if user re-renders the game-over screen)
   if (state.lastSavedGameId === null) {
     arr.unshift(entry);
-    if (arr.length > 50) arr.length = 50; // cap at 50 saved games
+    if (arr.length > ARCHIVE_MAX) arr.length = ARCHIVE_MAX; // cap archive
     saveArchive(arr);
     state.lastSavedGameId = entry.id;
+    // Game finished — clear the in-progress save
+    clearCurrentState();
   }
 }
 
@@ -4080,6 +4085,10 @@ function getRoundEffectiveScores(r) {
   return scores;
 }
 function renderGame() {
+  // Auto-save in-progress game before every render so closing/reopening the
+  // app resumes right where the user left off.
+  try { saveCurrentState(); } catch(e) {}
+
   const totals = getTotals();
   const roundsPlayed = realRoundsCount();
   const isGameOver = roundsPlayed >= HAND_MAX_ROUNDS;
@@ -4736,7 +4745,28 @@ document.querySelectorAll('.footer-snap, .footer-social').forEach(link => {
 });
 
 document.addEventListener('touchstart', () => {}, { passive: true });
-</script>
 
+/* ═══════════════════ Restore previous session on app open ═══════════════════ */
+/* If a game was in progress when the app was closed, resume it automatically. */
+(function restoreSavedSession() {
+  try {
+    const saved = loadCurrentState();
+    if (!saved) return;
+    // Only resume if there's actual game progress (players + rounds)
+    if (!saved.players || !saved.rounds || saved.rounds.length === 0) return;
+
+    state.players = saved.players;
+    state.rounds = saved.rounds;
+    state.startTime = saved.startTime || Date.now();
+    state.lastSavedGameId = saved.lastSavedGameId || null;
+
+    // Jump to the game screen with restored state
+    showScreen('screen-game');
+    renderGame();
+  } catch (e) {
+    console.log('Could not restore session:', e);
+  }
+})();
+</script>
 </body>
 </html>
