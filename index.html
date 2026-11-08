@@ -13,7 +13,7 @@
      IMPORTANT: bump OTA_HTML_VERSION on every deploy for this to work.
 -->
 <script>
-const OTA_HTML_VERSION = 27;
+const OTA_HTML_VERSION = 29;
 
 (function otaInstantUpdate() {
   // Guard against reload loops: after we swap once in this session, don't retry
@@ -947,6 +947,168 @@ setTimeout(function() {
   .archive-player.is-winner .archive-player-score { color: var(--gold-hi); }
   [data-theme="light"] .archive-player.is-winner .archive-player-name,
   [data-theme="light"] .archive-player.is-winner .archive-player-score { color: var(--gold-deep); }
+
+  .archive-view-hint {
+    text-align: center;
+    font-family: 'Cairo', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-mute);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    opacity: 0.8;
+  }
+
+  /* ═══════════════════ Game detail modal ═══════════════════ */
+  .game-detail-dialog {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: calc(100vw - 24px);
+    max-width: 500px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+  }
+  .game-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .game-detail-title {
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--gold-hi);
+    margin: 0;
+  }
+  [data-theme="light"] .game-detail-title { color: var(--green-deep); }
+  .game-detail-close {
+    background: none;
+    border: none;
+    color: var(--text);
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .game-detail-close svg { width: 20px; height: 20px; }
+  .game-detail-close:active { background: var(--surface-2); }
+  .game-detail-body {
+    padding: 14px 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .detail-info {
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .detail-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+  }
+  .detail-info-label {
+    color: var(--text-mute);
+    font-weight: 700;
+  }
+  .detail-info-value {
+    color: var(--text);
+    font-weight: 800;
+  }
+  .detail-winner {
+    color: var(--gold-hi);
+  }
+  [data-theme="light"] .detail-winner { color: var(--green-deep); }
+
+  .detail-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Cairo', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .detail-table th,
+  .detail-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .detail-table th {
+    background: var(--surface-2);
+    color: var(--gold-hi);
+    font-weight: 900;
+    font-size: 11px;
+    position: sticky;
+    top: 0;
+  }
+  [data-theme="light"] .detail-table th { color: var(--green-deep); }
+  .detail-num {
+    color: var(--gold-hi);
+    font-weight: 900;
+  }
+  [data-theme="light"] .detail-num { color: var(--green-deep); }
+  .detail-type {
+    color: var(--text);
+    font-weight: 800;
+    font-size: 10.5px;
+  }
+  .detail-winner-cell {
+    color: var(--text);
+    font-weight: 800;
+  }
+  .detail-score {
+    color: var(--text);
+    font-weight: 700;
+  }
+  .detail-score.is-win {
+    color: var(--gold-hi);
+    font-weight: 900;
+  }
+  [data-theme="light"] .detail-score.is-win { color: var(--green-deep); }
+  .detail-rios {
+    background: rgba(166, 59, 47, 0.08);
+  }
+  [data-theme="light"] .detail-rios { background: rgba(166, 59, 47, 0.12); }
+  .detail-totals-row {
+    background: var(--surface-2);
+    border-top: 2px solid var(--gold);
+  }
+  .detail-totals-label {
+    font-weight: 900;
+    color: var(--gold-hi);
+    font-size: 12px;
+    text-align: center !important;
+  }
+  [data-theme="light"] .detail-totals-label { color: var(--green-deep); }
+  .detail-total {
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .detail-total.is-win {
+    color: var(--gold-hi);
+  }
+  [data-theme="light"] .detail-total.is-win { color: var(--green-deep); }
 
   /* ═══════════════════ Setup screen ═══════════════════ */
   .setup-header {
@@ -2806,6 +2968,19 @@ setTimeout(function() {
   </div>
 </div>
 
+<!-- Game Detail Modal — shows round-by-round breakdown of a saved game -->
+<div class="dialog-overlay" id="gameDetailModal">
+  <div class="game-detail-dialog">
+    <div class="game-detail-header">
+      <h3 class="game-detail-title">تفاصيل الجولات</h3>
+      <button class="game-detail-close" id="gameDetailClose" aria-label="إغلاق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="game-detail-body" id="gameDetailBody"></div>
+  </div>
+</div>
+
 <!-- "ما جاب الشنب" modal — shown when the declared last-round winner wouldn't actually finish first -->
 <div class="dialog-overlay" id="missDialog">
   <div class="miss-dialog">
@@ -3524,6 +3699,12 @@ $('privacyCloseBtn').addEventListener('click', () => {
   $('privacyModal').classList.remove('active');
 });
 
+/* Game detail modal: close via X button or tapping backdrop */
+$('gameDetailClose').addEventListener('click', closeGameDetail);
+$('gameDetailModal').addEventListener('click', (e) => {
+  if (e.target.id === 'gameDetailModal') closeGameDetail();
+});
+
 /* ═══════════════════ Back button ═══════════════════ */
 $('backBtn').addEventListener('click', async () => {
   const id = state.screen;
@@ -3657,9 +3838,6 @@ function renderArchive() {
   }
   list.className = 'archive-list';
   list.innerHTML = arr.map(g => {
-    const ranked = g.totals
-      .map((t, i) => ({ t, i }))
-      .sort((a, b) => a.t - b.t);
     const playersHtml = g.players.map((name, i) => {
       const isWinner = i === g.winnerIdx;
       return `
@@ -3670,7 +3848,7 @@ function renderArchive() {
       `;
     }).join('');
     return `
-      <div class="archive-card" data-id="${g.id}">
+      <div class="archive-card" data-id="${g.id}" data-view="${g.id}">
         <div class="archive-card-header">
           <span class="archive-card-date">${formatArchiveDate(g.savedAt)}</span>
           <button class="archive-card-delete" data-del="${g.id}" aria-label="حذف">
@@ -3683,9 +3861,19 @@ function renderArchive() {
           <span class="archive-winner-score">${fmtScore(g.totals[g.winnerIdx])}</span>
         </div>
         <div class="archive-players">${playersHtml}</div>
+        <div class="archive-view-hint">👆 اضغط لعرض تفاصيل الجولات</div>
       </div>
     `;
   }).join('');
+
+  // Attach click handler to open details when tapping the card
+  list.querySelectorAll('[data-view]').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Ignore if delete button was tapped
+      if (e.target.closest('[data-del]')) return;
+      openGameDetail(card.dataset.view);
+    });
+  });
 
   // Attach delete handlers
   list.querySelectorAll('[data-del]').forEach(btn => {
@@ -3699,6 +3887,102 @@ function renderArchive() {
       renderArchive();
     });
   });
+}
+
+/* ═══════════════════ Game Detail View ═══════════════════ */
+function openGameDetail(gameId) {
+  const arr = loadArchive();
+  const g = arr.find(x => x.id === gameId);
+  if (!g) return;
+
+  const modal = $('gameDetailModal');
+  const body = $('gameDetailBody');
+
+  // Build table: Round# | Type | Winner | each player's score for that round
+  const headers = ['#', 'النوع', 'الفائز', ...g.players];
+  let tableHtml = `
+    <div class="detail-info">
+      <div class="detail-info-row">
+        <span class="detail-info-label">التاريخ:</span>
+        <span class="detail-info-value">${formatArchiveDate(g.savedAt)}</span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">الشنب:</span>
+        <span class="detail-info-value detail-winner">
+          🏆 ${escapeHtml(g.players[g.winnerIdx])} (${fmtScore(g.totals[g.winnerIdx])})
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-table-wrap">
+      <table class="detail-table">
+        <thead>
+          <tr>
+            ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  // Running totals as we go
+  const running = [0, 0, 0, 0];
+  let roundNum = 0;
+
+  g.rounds.forEach((r) => {
+    // Update running totals from this round's scores
+    r.scores.forEach((s, i) => { running[i] += s; });
+
+    let typeLabel = r.type || '-';
+    let winnerLabel = '-';
+    let rowClass = '';
+
+    if (r.isRiosOnly) {
+      typeLabel = 'ريوس';
+      winnerLabel = '-';
+      rowClass = 'detail-rios';
+    } else {
+      roundNum++;
+      winnerLabel = r.winner !== null && r.winner !== undefined
+        ? g.players[r.winner]
+        : '-';
+    }
+
+    const displayNum = r.isRiosOnly ? '⚡' : toArabicDigits(roundNum);
+
+    tableHtml += `
+      <tr class="${rowClass}">
+        <td class="detail-num">${displayNum}</td>
+        <td class="detail-type">${escapeHtml(typeLabel)}</td>
+        <td class="detail-winner-cell">${escapeHtml(winnerLabel)}</td>
+        ${r.scores.map((s, i) => {
+          const isWin = r.winner === i;
+          const sign = s > 0 ? '+' : '';
+          return `<td class="detail-score${isWin ? ' is-win' : ''}">${sign}${fmtScore(s)}</td>`;
+        }).join('')}
+      </tr>
+    `;
+  });
+
+  // Totals row
+  tableHtml += `
+        <tr class="detail-totals-row">
+          <td colspan="3" class="detail-totals-label">المجموع</td>
+          ${g.totals.map((t, i) => {
+            const isWinner = i === g.winnerIdx;
+            return `<td class="detail-total${isWinner ? ' is-win' : ''}">${fmtScore(t)}</td>`;
+          }).join('')}
+        </tr>
+      </tbody>
+      </table>
+    </div>
+  `;
+
+  body.innerHTML = tableHtml;
+  modal.classList.add('active');
+}
+
+function closeGameDetail() {
+  $('gameDetailModal').classList.remove('active');
 }
 
 $('openArchiveBtn').addEventListener('click', () => {
@@ -4059,6 +4343,49 @@ function getTotals() {
   return totals;
 }
 
+/* ═══════════════════ Sticky شنب/خباص computation ═══════════════════
+ * Walks through all rounds chronologically. After each round, recomputes
+ * who's at the top (خباص) and bottom (شنب). The twist: if the previous
+ * خباص/شنب is still tied at the extreme score, they KEEP their status
+ * (it's "sticky"). Only someone who STRICTLY beats them takes it. */
+function computeRanks() {
+  const running = [0, 0, 0, 0];
+  let shanabIdx = -1;  // first place (lowest score)
+  let xabbasIdx = -1;  // last place (highest score)
+
+  state.rounds.forEach(r => {
+    r.scores.forEach((s, i) => running[i] += s);
+    if (r.rios) r.rios.forEach(rx => running[rx.playerIdx] += rx.penalty);
+    if (r.adjustments) r.adjustments.forEach(adj => running[adj.playerIdx] += adj.amount);
+
+    const minS = Math.min(...running);
+    const maxS = Math.max(...running);
+
+    // If everyone is tied, no clear rank exists
+    if (minS === maxS) {
+      shanabIdx = -1;
+      xabbasIdx = -1;
+      return;
+    }
+
+    // Keep current شنب if they're still tied for min; otherwise, new شنب
+    if (shanabIdx !== -1 && running[shanabIdx] === minS) {
+      // keep
+    } else {
+      shanabIdx = running.indexOf(minS);
+    }
+
+    // Keep current خباص if they're still tied for max; otherwise, new خباص
+    if (xabbasIdx !== -1 && running[xabbasIdx] === maxS) {
+      // keep
+    } else {
+      xabbasIdx = running.indexOf(maxS);
+    }
+  });
+
+  return { shanabIdx, xabbasIdx };
+}
+
 /* Number of "real" rounds played — excludes standalone ريوس placeholders. */
 function realRoundsCount() {
   return state.rounds.filter(r => !r.isRiosOnly).length;
@@ -4098,8 +4425,11 @@ function renderGame() {
 
   const board = $('scoreboard');
   board.innerHTML = '';
-  const firstIdx = hasRounds && minScore !== maxScore ? totals.indexOf(minScore) : -1;
-  const lastIdx  = hasRounds && minScore !== maxScore ? totals.indexOf(maxScore) : -1;
+  // Sticky شنب/خباص — person who WAS first/last keeps the title on a tie,
+  // only strictly-better/worse scores take it from them.
+  const ranks = hasRounds ? computeRanks() : { shanabIdx: -1, xabbasIdx: -1 };
+  const firstIdx = ranks.shanabIdx;
+  const lastIdx  = ranks.xabbasIdx;
   const isLastRound = roundsPlayed === HAND_MAX_ROUNDS - 1;
 
   // Adaptive font size: scale down when numbers get long
